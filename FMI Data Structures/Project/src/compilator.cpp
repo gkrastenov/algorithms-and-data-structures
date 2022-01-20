@@ -235,14 +235,14 @@ ASTNode* Compilator::runTreeBody(ASTNode* astNode)
 		}
 		else if (astNode->getFunction().getType() == FunctionType::INT) { // int
 			if (astNode->getChindrenSize() != 1)
-				setErrorLogger(ErrorType::INT_MISSING_ARGUMENTS);
+				setErrorLogger(ErrorType::ARGUMENT_EXEPTION);
 
-			intiger(astNode, childFunction);
+			integer(astNode, childFunction);
 			continue;
 		}
 		else if (astNode->getFunction().getType() == FunctionType::TAIL) { // tail
 			if (astNode->getChindrenSize() != 1) 
-				errorLogger.setErrorType(ErrorType::TAIL_ZERO_ARGUMENTS);
+				errorLogger.setErrorType(ErrorType::ARGUMENT_EXEPTION);
 				// add good exepetion, to be removed "TAIL_ZERO_ARGUMENTS" "TAIL_TOO_MUCH_ARGUMENTS";;
 			
 			tail(astNode, childFunction);
@@ -296,13 +296,13 @@ void Compilator::tail(ASTNode* root, Function& listFunciton)
 	// TODO: trow exeption for not correct type
 }
 
-void Compilator::intiger(ASTNode* root, Function& numberFunction)
+void Compilator::integer(ASTNode* root, Function& numberFunction)
 {
 	if (numberFunction.getType() != FunctionType::NUMBER)
 		throw "Not correct argument for function int()"; // TODO: Better name
 
-
-	root->getFunction().addNumber(std::floor(numberFunction.getList().front() * 100.) / 100);
+	auto integer = std::floor(numberFunction.getList().front());
+	root->getFunction().addNumber(integer);
 }
 
 void Compilator::mod(ASTNode* root, Function& numberFunction)

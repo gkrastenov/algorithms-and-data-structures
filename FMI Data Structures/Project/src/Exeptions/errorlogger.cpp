@@ -1,7 +1,7 @@
 #include "errorlogger.h"
 #include <iostream>
 
-std::unordered_map<ErrorLogger::ErrorType, std::string, ErrorLogger::ErrorTypeHash> ErrorLogger::errorMessages =
+std::unordered_map<ErrorType, std::string> ErrorLogger::errorMessages =
 {
     // Operations
     { ErrorType::WRONG_USE_OPERATION_MODIFIED_BUILT_IN_FUNCTION,   "ERROR: Built-in function must not be modified." },

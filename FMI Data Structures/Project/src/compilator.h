@@ -38,7 +38,7 @@ private:
 	
 	std::unordered_map<string, ContainerValue> container{};
 
-	ErrorLogger logger{}; // handle all exeption during Compilator execution
+	ErrorLogger errorLogger{}; // handle all exeption during Compilator execution
 	ASTNode* tree{};
 
 	bool isCreated = false;
@@ -49,7 +49,7 @@ public:
 	Compilator() {};
 
 	int getContainerSize() const { return container.size(); }
-	const ErrorType getErrorType() const { return logger.getErrorType(); }
+	const ErrorType getErrorType() const { return errorLogger.getErrorType(); }
 	bool getIsCreated() const { return isCreated; }
 
 	void compileCode(std::istream& stream);
@@ -58,7 +58,7 @@ public:
 
 	bool isValidBasicFunction(const string& basicFuncCode) const;
 private:
-	void setErrorType(const ErrorType errorType) const;
+	void setErrorLogger(const ErrorType errorType);
 	void createNumberNode(std::stack< ASTNode*>& stack, const string& code);
 	
 	double stringToNumber(const string& number);
@@ -75,7 +75,7 @@ private:
 	// Built-in function
 	void head(ASTNode* root, Function& listFunciton);
 	void tail(ASTNode* root, Function& listFunciton);
-	void intiger(ASTNode* root, Function& numberFunction);
+	void integer(ASTNode* root, Function& numberFunction);
 	void mod(ASTNode* root, Function& numberFunction);
 
 

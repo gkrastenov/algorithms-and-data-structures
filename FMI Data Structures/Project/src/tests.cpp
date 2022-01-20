@@ -13,8 +13,8 @@ TEST_CASE("Run built-in function")
 		REQUIRE(!compilator.getIsCreated());
 		REQUIRE(compilator.output() == std::multiset<double>{5});
 
-		std::stringstream myErrorInt("int(5.2, 5.2)");
-		REQUIRE_THROWS(compilator.compileCode(myInt));
+		std::stringstream myErrorInt("int(5.2, 5)");
+		REQUIRE_THROWS(compilator.compileCode(myErrorInt));
 		REQUIRE(compilator.getErrorType() == ErrorType::ARGUMENT_EXEPTION);
 
 		std::stringstream myErrorListInt("int([5 2 5])");
@@ -51,7 +51,7 @@ TEST_CASE("Compile complex funcitons")
 		std::stringstream isOddCall("isOdd(5)");
 		compilator.compileCode(isOddCall);
 		REQUIRE(!compilator.getIsCreated());
-		REQUIRE(compilator.getContainerSize() == 1);
+		REQUIRE(compilator.getContainerSize() == 2);
 		REQUIRE(compilator.output() == std::multiset<double>{1});
 
 		std::stringstream myNumber("myNumber -> 5");

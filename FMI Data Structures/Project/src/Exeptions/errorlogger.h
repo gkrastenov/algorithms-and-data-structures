@@ -137,22 +137,9 @@ enum class ErrorType : unsigned int
 class ErrorLogger
 {
 private:
-    // NOTE: This shouldn't be necessary with a fully compliant C++14 compiler
-    /*
-    * \struct   ErrorTypeHash
-    * \brief    Functor providing a hash for the ErrorType enum
-    */
-    struct ErrorTypeHash
-    {
-        template <typename T>
-        std::size_t operator()(T t) const
-        {
-            return static_cast<std::size_t>(t);
-        }
-    };
 
 private:
-    static std::unordered_map<ErrorType, std::string, ErrorTypeHash> errorMessages;    /*!< Maps the error types to the error messages */
+    std::unordered_map<ErrorType, std::string> errorMessages;    /*!< Maps the error types to the error messages */
     ErrorType errorType;
 public:
     ErrorLogger() = default;
@@ -161,7 +148,7 @@ public:
     ~ErrorLogger() = default;
 
 public:
-    const std::string getErrorMessages() {};
+    const std::string getErrorMessages() { return errorMessages[errorType]; };
     const ErrorType getErrorType() const { return errorType; }
     void setErrorType(const ErrorType type) { errorType = type; }
 };
