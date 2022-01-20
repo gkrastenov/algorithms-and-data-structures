@@ -32,6 +32,12 @@ public:
     Function& getFunction() { return function; }
     ChildrenNodes& getChildrenNodes() { return children; }
     const size_t getChindrenSize() const { return children.size(); }
+    ASTNode* getChildrenNodeByIndex(size_t index)
+    {
+        if (index >= children.size())
+            throw " Out of range exeption";
+        return children[index];
+    }
     void add_child_nodes(ASTNode* node)
     {
         children.emplace_back(node);

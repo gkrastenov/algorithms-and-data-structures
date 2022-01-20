@@ -76,7 +76,7 @@ private:
 	void head(ASTNode* root, Function& listFunciton);
 	void tail(ASTNode* root, Function& listFunciton);
 	void integer(ASTNode* root, Function& numberFunction);
-	void mod(ASTNode* root, Function& numberFunction);
+	void mod(ASTNode* root);
 
 
 	string buildCompileCode(const string& code, const std::vector<string>& arguments);

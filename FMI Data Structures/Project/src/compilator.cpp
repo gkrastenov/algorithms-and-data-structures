@@ -219,17 +219,17 @@ ASTNode* Compilator::runTreeBody(ASTNode* astNode)
 	{
 		return astNode;
 	}
-	for (ASTNode* child : astNode->getChildrenNodes())
+	for (size_t i = 0; i < astNode->getChindrenSize(); i++)
 	{
-		auto curr = runTreeBody(child);
+		auto curr = runTreeBody(astNode->getChildrenNodeByIndex(i));
 		auto childFunction = curr->getFunction();
 
 		if (astNode->getFunction().getType() == FunctionType::MOD) {
-			if (astNode->getChindrenSize() != 2) {
-				// TODO: good exeption
-			}
-			else {
-				mod(astNode, childFunction);
+			if (astNode->getChindrenSize() != 2)
+				setErrorLogger(ErrorType::ARGUMENT_EXEPTION);
+
+			if (i == 1) {
+				mod(astNode);
 				continue;
 			}
 		}
@@ -241,10 +241,9 @@ ASTNode* Compilator::runTreeBody(ASTNode* astNode)
 			continue;
 		}
 		else if (astNode->getFunction().getType() == FunctionType::TAIL) { // tail
-			if (astNode->getChindrenSize() != 1) 
+			if (astNode->getChindrenSize() != 1)
 				errorLogger.setErrorType(ErrorType::ARGUMENT_EXEPTION);
-				// add good exepetion, to be removed "TAIL_ZERO_ARGUMENTS" "TAIL_TOO_MUCH_ARGUMENTS";;
-			
+
 			tail(astNode, childFunction);
 			continue;
 		}
@@ -256,7 +255,7 @@ ASTNode* Compilator::runTreeBody(ASTNode* astNode)
 			continue;
 		}
 
-		if (astNode->getFunction().getType() == FunctionType::NOT_CREATED_LIST){
+		if (astNode->getFunction().getType() == FunctionType::NOT_CREATED_LIST) {
 			if (childFunction.getType() == FunctionType::NUMBER) {
 				astNode->getFunction().addList(childFunction.getList());
 			}
@@ -305,9 +304,21 @@ void Compilator::integer(ASTNode* root, Function& numberFunction)
 	root->getFunction().addNumber(integer);
 }
 
-void Compilator::mod(ASTNode* root, Function& numberFunction)
+void Compilator::mod(ASTNode* root)
 {
+	auto children = root->getChildrenNodes(); // vector
 
+	if(children[0]->getFunction().getList().size() != 1 
+	|| children[1]->getFunction().getList().size() != 1)
+		setErrorLogger(ErrorType::ARGUMENT_EXEPTION);
+
+	if(children[1]->getFunction().getList().front() == 0)
+		setErrorLogger(ErrorType::DIVIDE_BY_ZERO);
+
+	int divindend = children[0]->getFunction().getList().front();
+	int divisor = children[1]->getFunction().getList().front();
+
+	root->getFunction().replaceList(divindend % divisor);
 }
 
 

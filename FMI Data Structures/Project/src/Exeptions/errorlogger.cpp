@@ -100,6 +100,7 @@ std::unordered_map<ErrorType, std::string> ErrorLogger::errorMessages =
     { ErrorType::EXPECTED_DECL,                 "ERROR: Expected a declaration" },
     { ErrorType::MISSING_SEMI_COLON,            "ERROR: Expected a ;" },
     { ErrorType::UNCLOSED_ML_COMMENT,           "ERROR: Unclosed multiline comment" },
+    { ErrorType::DIVIDE_BY_ZERO,                "ERROR: Trying to divide by zero." },
 
     // Param
     { ErrorType::PARAM_MISSING_COLON,           "PARAM ERROR: Missing colon between a parameter and its type" },

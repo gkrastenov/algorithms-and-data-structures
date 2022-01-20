@@ -128,6 +128,7 @@ enum class ErrorType : unsigned int
     EXPECTED_DECL,
     MISSING_SEMI_COLON,
     UNCLOSED_ML_COMMENT,
+    DIVIDE_BY_ZERO,
 
     NOT_HANDLED_ERROR,
 };

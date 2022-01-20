@@ -21,6 +21,26 @@ TEST_CASE("Run built-in function")
 		REQUIRE_THROWS(compilator.compileCode(myErrorListInt));
 		REQUIRE(compilator.getErrorType() == ErrorType::ARGUMENT_EXEPTION);
 	}
+
+	SECTION("Run built-in function in: mod")
+	{
+		std::stringstream myMod("mod(5 2)");
+		compilator.compileCode(myMod);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == std::multiset<double>{1});
+
+		std::stringstream myErrorMod1("mod(5)");
+		REQUIRE_THROWS(compilator.compileCode(myErrorMod1));
+		REQUIRE(compilator.getErrorType() == ErrorType::ARGUMENT_EXEPTION);
+
+		std::stringstream myErrorMod2("mod([5 4 6 2])");
+		REQUIRE_THROWS(compilator.compileCode(myErrorMod2));
+		REQUIRE(compilator.getErrorType() == ErrorType::ARGUMENT_EXEPTION);
+
+		std::stringstream myErrorMod3("mod(5 0)");
+		REQUIRE_THROWS(compilator.compileCode(myErrorMod3));
+		REQUIRE(compilator.getErrorType() == ErrorType::DIVIDE_BY_ZERO);
+	}
 }
 
 TEST_CASE("Compile complex funcitons")
@@ -48,7 +68,7 @@ TEST_CASE("Compile complex funcitons")
 		REQUIRE(compilator.getContainerSize() == 2);
 		REQUIRE(compilator.output() == isCreated);
 		
-		std::stringstream isOddCall("isOdd(5)");
+		std::stringstream isOddCall("isOdd(5.2)");
 		compilator.compileCode(isOddCall);
 		REQUIRE(!compilator.getIsCreated());
 		REQUIRE(compilator.getContainerSize() == 2);
