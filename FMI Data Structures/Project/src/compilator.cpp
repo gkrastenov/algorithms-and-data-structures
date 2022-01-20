@@ -1,6 +1,6 @@
 #include "compilator.h"
 
-string Compilator::build_compile_code(const string& code, const std::vector<string>& arguments)
+string Compilator::buildCompileCode(const string& code, const std::vector<string>& arguments)
 {
 	size_t index = 0;
 	string buildCode = code;
@@ -91,7 +91,7 @@ void Compilator::compileCode(std::istream& stream)
 		else {
 			isCreated = true;
 		}
-		unsigned int countOfArguments = count_arguments(functionCode);
+		unsigned int countOfArguments = countArguments(functionCode);
 		container[functionName] = ContainerValue(countOfArguments, functionCode);
 	}
 	else {
@@ -99,7 +99,7 @@ void Compilator::compileCode(std::istream& stream)
 		canBePrinted = true;
 
 		std::vector<string> countOfArguments = getArguments(code);
-		string compileCode = build_compile_code(code, countOfArguments);
+		string compileCode = buildCompileCode(code, countOfArguments);
 		createTreeBody(compileCode);
 		compiledFunction = runTreeBody(tree)->getFunction();
 	}
@@ -369,7 +369,7 @@ std::vector<string> Compilator::getArguments(std::string& code) const
 }
 
 
-unsigned int Compilator::count_arguments(std::string& code) const
+unsigned int Compilator::countArguments(std::string& code) const
 {
 	unsigned int occurrences = 0;
 	std::string::size_type pos = 0;

@@ -54,11 +54,11 @@ public:
 
 	const string getName() const { return name; }
 	LList<double> getList() const{ return list; }
-	void add_number(double number) { list.push_end(number); }
-	void add_list(const LList<double> otherList);
+	void addNumber(double number) { list.push_end(number); }
+	void addList(const LList<double> otherList);
 
-	void replace_list(const double number) { this->list = number; }	
-	void replace_list(const size_t index,const LList<double>& list);
+	void replaceList(const double number) { this->list = number; }	
+	void replaceList(const size_t index,const LList<double>& list);
 
 private:
 	void copy(const Function& other);

@@ -56,7 +56,7 @@ public:
 
 	std::multiset<double> output() const;
 
-	bool valid_syntax_basic_funciton(const string& basicFuncCode) const;
+	bool isValidBasicFunction(const string& basicFuncCode) const;
 private:
 	void createNumberNode(std::stack< ASTNode*>& stack, const string& code);
 	
