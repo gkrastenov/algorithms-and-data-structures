@@ -58,6 +58,7 @@ public:
 
 	bool isValidBasicFunction(const string& basicFuncCode) const;
 private:
+	void setErrorType(const ErrorType errorType) const;
 	void createNumberNode(std::stack< ASTNode*>& stack, const string& code);
 	
 	double stringToNumber(const string& number);

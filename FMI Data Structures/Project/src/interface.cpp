@@ -1,11 +1,11 @@
 ﻿#include "interface.h"
 
-void Function::add_list(const LList<double> otherList)
+void Function::addList(const LList<double> otherList)
 {
 	this->list += otherList;
 }
 
-void Function::replace_list(const size_t index, const LList<double>& list)
+void Function::replaceList(const size_t index, const LList<double>& list)
 {
 	this->list.replace_fromPos(index, list);
 }

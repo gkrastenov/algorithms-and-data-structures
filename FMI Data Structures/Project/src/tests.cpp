@@ -3,6 +3,25 @@
 
 #include "interface.h"
 #include "compilator.h"
+TEST_CASE("Run built-in function")
+{
+	Compilator compilator;
+	SECTION("Run built-in function in: int")
+	{
+		std::stringstream myInt("int(5.2)");
+    	compilator.compileCode(myInt);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == std::multiset<double>{5});
+
+		std::stringstream myErrorInt("int(5.2, 5.2)");
+		REQUIRE_THROWS(compilator.compileCode(myInt));
+		REQUIRE(compilator.getErrorType() == ErrorType::ARGUMENT_EXEPTION);
+
+		std::stringstream myErrorListInt("int([5 2 5])");
+		REQUIRE_THROWS(compilator.compileCode(myErrorListInt));
+		REQUIRE(compilator.getErrorType() == ErrorType::ARGUMENT_EXEPTION);
+	}
+}
 
 TEST_CASE("Compile complex funcitons")
 {
@@ -62,7 +81,6 @@ TEST_CASE("Compile complex funcitons")
 		REQUIRE(compilator.output() == expected2);
 	}
 }
-
 
 TEST_CASE("Run already created function")
 {
@@ -166,7 +184,7 @@ TEST_CASE("Built-In functions must not be modified")
 	{
 		std::stringstream throw1("sqrt()");
 		REQUIRE_THROWS(compilator.compileCode(throw1));
-		REQUIRE(compilator.getErrorType() == ErrorType::SQRT_MISSING_ARGUMENTS);
+		REQUIRE(compilator.getErrorType() == ErrorType::SQRT_ARGUMENT);
 
 		std::stringstream throw2("eq()");
 		REQUIRE_THROWS(compilator.compileCode(throw2));

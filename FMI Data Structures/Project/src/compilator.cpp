@@ -11,29 +11,22 @@ string Compilator::buildCompileCode(const string& code, const std::vector<string
 		if (buildCode[i] == '(')
 		{
 			if (getFunctionType(curr) == FunctionType::UNKNOWN) {
-				if (containerContains(curr) == false) {
-					logger.setErrorType(ErrorType::NOT_FOUNDED_FUNCTION);
-					throw "NOT_FOUNDED_FUNCTION";
-				}
+				if (containerContains(curr) == false)
+					setErrorLogger(ErrorType::NOT_FOUNDED_FUNCTION);
+
 				stopIndex = i - curr.size();
 				string newCode = container[curr].getCode();
 				curr.push_back(buildCode[i]);
 				while (buildCode[i] != ')')
 				{
 					++i;
-					if (i == code.size()) {
-
-						logger.setErrorType(ErrorType::SYNTAX_INVALID);
-						throw "SYNTAX_INVALID";
-					}
+					if (i == code.size()) 
+						setErrorLogger(ErrorType::SYNTAX_INVALID);
+				
 					curr.push_back(code[i]);
 				}
 				if (replace(buildCode, curr, newCode) == false)
-				{
-					// TODO: Change error type with: cant be replaced string or something else.
-					logger.setErrorType(ErrorType::NOT_FOUNDED_FUNCTION);
-					throw "NOT_FOUNDED_FUNCTION";
-				}
+					setErrorLogger(ErrorType::NOT_FOUNDED_FUNCTION); // TODO: Change error type with: cant be replaced string or something else.
 				i = stopIndex;
 			}
 			curr = "";
@@ -81,10 +74,8 @@ void Compilator::compileCode(std::istream& stream)
 		prev = pos + DELIMETAR.size();
 		string functionCode = code.substr(prev);
 
-		if (getFunctionType(functionName) != FunctionType::UNKNOWN) {
-			logger.setErrorType(ErrorType::WRONG_USE_OPERATION_MODIFIED_BUILT_IN_FUNCTION);
-			throw "WRONG_USE_OPERATION_MODIFIED_BUILT_IN_FUNCTION";
-		}
+		if (getFunctionType(functionName) != FunctionType::UNKNOWN)
+			setErrorLogger(ErrorType::WRONG_USE_OPERATION_MODIFIED_BUILT_IN_FUNCTION);
 
 		if (containerContains(functionName))
 			isCreated = false;
@@ -136,15 +127,12 @@ int Compilator::createTreeBody(const string& funCode)
 			continue;
 		}
 		else if (funCode[i] == '[') {
-			if (openListBracket){
-				logger.setErrorType(ErrorType::SYNTAX_MISSING_LIST_RBRACE);
-				throw "SYNTAX_MISSING_LIST_RBRACE";
-			}
+			if (openListBracket)
+				setErrorLogger(ErrorType::SYNTAX_MISSING_LIST_RBRACE);
 
-			if (minus) {
-				logger.setErrorType(ErrorType::SYNTAX_MINUS_BEFORE_LIST_LBRACE);
-				throw "SYNTAX_MINUS_BEFORE_LIST_LBRACE";
-			}
+			if (minus) 
+				setErrorLogger(ErrorType::SYNTAX_MINUS_BEFORE_LIST_LBRACE);
+
 
 			openListBracket = true;
 			Function func(ARGUMENT_LIST, FunctionType::NOT_CREATED_LIST);
@@ -161,19 +149,12 @@ int Compilator::createTreeBody(const string& funCode)
 			continue;
 		}
 		else if (funCode[i] == ']') {
-			if (openListBracket == false){
-				logger.setErrorType(ErrorType::SYNTAX_MISSING_LIST_LBRACE);
-				throw "SYNTAX_MISSING_LIST_RBRACE";
-			}
-
-			if (closedListBracket){
-				logger.setErrorType(ErrorType::SYNTAX_MISSING_LIST_RBRACE);
-				throw "SYNTAX_MISSING_LIST_RBRACE";
-			}
-			if (minus) {
-				logger.setErrorType(ErrorType::SYNTAX_MINUS_BEFORE_LIST_RBRACE);
-				throw "SYNTAX_MINUS_BEFORE_LIST_RBRACE";
-			}
+			if (openListBracket == false)
+				setErrorLogger(ErrorType::SYNTAX_MISSING_LIST_LBRACE);
+			if (closedListBracket)
+				setErrorLogger(ErrorType::SYNTAX_MISSING_LIST_RBRACE);
+			if (minus) 
+				setErrorLogger(ErrorType::SYNTAX_MINUS_BEFORE_LIST_RBRACE);
 
 			closedListBracket = true;
 			if (curr == "")
@@ -253,15 +234,15 @@ ASTNode* Compilator::runTreeBody(ASTNode* astNode)
 			}
 		}
 		else if (astNode->getFunction().getType() == FunctionType::INT) { // int
-			if (astNode->getChindrenSize() != 1) {}
-				// TODO: good exeption		
+			if (astNode->getChindrenSize() != 1)
+				setErrorLogger(ErrorType::INT_MISSING_ARGUMENTS);
 
 			intiger(astNode, childFunction);
 			continue;
 		}
 		else if (astNode->getFunction().getType() == FunctionType::TAIL) { // tail
 			if (astNode->getChindrenSize() != 1) 
-				logger.setErrorType(ErrorType::TAIL_ZERO_ARGUMENTS);
+				errorLogger.setErrorType(ErrorType::TAIL_ZERO_ARGUMENTS);
 				// add good exepetion, to be removed "TAIL_ZERO_ARGUMENTS" "TAIL_TOO_MUCH_ARGUMENTS";;
 			
 			tail(astNode, childFunction);
@@ -269,7 +250,7 @@ ASTNode* Compilator::runTreeBody(ASTNode* astNode)
 		}
 		else if (astNode->getFunction().getType() == FunctionType::HEAD) {// head
 			if (astNode->getChindrenSize() != 1)
-				logger.setErrorType(ErrorType::HEAD_ZERO_ARGUMENTS);
+				errorLogger.setErrorType(ErrorType::HEAD_ZERO_ARGUMENTS);
 			// add good exepetion, throw "HEAD_ZERO_ARGUMENTS"; HEAD_NOT_MATCHING_CORRECT_ARGUMENT
 			head(astNode, childFunction);
 			continue;
@@ -277,10 +258,10 @@ ASTNode* Compilator::runTreeBody(ASTNode* astNode)
 
 		if (astNode->getFunction().getType() == FunctionType::NOT_CREATED_LIST){
 			if (childFunction.getType() == FunctionType::NUMBER) {
-				astNode->getFunction().add_list(childFunction.getList());
+				astNode->getFunction().addList(childFunction.getList());
 			}
 			else {
-				logger.setErrorType(ErrorType::ARGUMENT_ONLY_NUMBERS);
+				errorLogger.setErrorType(ErrorType::ARGUMENT_ONLY_NUMBERS);
 				throw "ARGUMENT_ONLY_NUMBERS";
 			}
 		}
@@ -298,7 +279,7 @@ void Compilator::head(ASTNode* root, Function& listFunciton)
 	if (listFunciton.getType() == FunctionType::CREATED_LIST || listFunciton.getType() == FunctionType::NOT_CREATED_LIST)
 	{
 		if (listFunciton.getList().size() >= 1)
-			listFunciton.replace_list(listFunciton.getList().front());
+			listFunciton.replaceList(listFunciton.getList().front());
 		// what to throw if i have head([])
 	}
 	// TODO: trow exeption for not correct type
@@ -309,7 +290,7 @@ void Compilator::tail(ASTNode* root, Function& listFunciton)
 	 if (listFunciton.getType() == FunctionType::CREATED_LIST || listFunciton.getType() == FunctionType::NOT_CREATED_LIST)
 	{
 		if (listFunciton.getList().size() >= 1)
-			root->getFunction().replace_list(1, listFunciton.getList());
+			root->getFunction().replaceList(1, listFunciton.getList());
 		// what to throw if i have tail([])
 	}
 	// TODO: trow exeption for not correct type
@@ -321,7 +302,7 @@ void Compilator::intiger(ASTNode* root, Function& numberFunction)
 		throw "Not correct argument for function int()"; // TODO: Better name
 
 
-	root->getFunction().add_number(std::floor(numberFunction.getList().front() * 100.) / 100);
+	root->getFunction().addNumber(std::floor(numberFunction.getList().front() * 100.) / 100);
 }
 
 void Compilator::mod(ASTNode* root, Function& numberFunction)
@@ -419,14 +400,18 @@ FunctionType Compilator::getFunctionType(const string& funcName) const
 	return FunctionType::UNKNOWN;
 }
 
+void Compilator::setErrorLogger(const ErrorType errorType)
+{
+	errorLogger.setErrorType(errorType);
+	throw errorLogger.getErrorMessages();
+}
+
 void Compilator::createNumberNode(std::stack<ASTNode*>& stack, const string& code)
 {
 	double number = stringToNumber(code);
-	if (logger.getErrorType() == ErrorType::WRONG_CAN_NOT_CONVERT_STRING_TO_NUMBER)
-		throw "WRONG_CAN_NOT_CONVERT_STRING_TO_NUMBER";
 
 	Function func(ARGUMENT_NUMBER, FunctionType::NUMBER);
-	func.add_number(number);
+	func.addNumber(number);
 	if (!stack.empty())
 	{
 		auto current = stack.top();
@@ -447,12 +432,12 @@ double Compilator::stringToNumber(const string& str)
 	}
 	catch (const std::exception& exp)
 	{
-	 logger.setErrorType(ErrorType::WRONG_CAN_NOT_CONVERT_STRING_TO_NUMBER);
+		setErrorLogger(ErrorType::WRONG_CAN_NOT_CONVERT_STRING_TO_NUMBER);
 	}
 	return value;
 }
 
-bool Compilator::valid_syntax_basic_funciton(const string& basicFuncCode) const
+bool Compilator::isValidBasicFunction(const string& basicFuncCode) const
 {
 	bool openBracket = false;
 	bool closedBracket = false;

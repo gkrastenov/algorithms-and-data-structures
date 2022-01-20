@@ -20,9 +20,10 @@ enum class ErrorType : unsigned int
 
     // Arguments
     ARGUMENT_ONLY_NUMBERS,
+    ARGUMENT_EXEPTION,
 
     // Built-int
-    SQRT_MISSING_ARGUMENTS,
+    SQRT_ARGUMENT,
     EQ_MISSING_ARGUMENTS,
     LE_MISSING_ARGUMENTS,
     NAND_MISSING_ARGUMENTS,

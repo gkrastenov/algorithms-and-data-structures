@@ -18,9 +18,10 @@ std::unordered_map<ErrorLogger::ErrorType, std::string, ErrorLogger::ErrorTypeHa
 
     // Arguments
     { ErrorType::ARGUMENT_ONLY_NUMBERS,    "ARGUMENT ERROR: Arguments have to be only numbers." },
+    { ErrorType::ARGUMENT_EXEPTION,    "ARGUMENT ERROR: Invalid arguments." },
 
     // Built-in functions
-    { ErrorType::SQRT_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Missing arguments for built-in function: \"sqrt\"." },
+    { ErrorType::SQRT_ARGUMENT,    "ARGUMENT ERROR: Missing arguments for built-in function: \"sqrt\"." },
     { ErrorType::EQ_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Missing arguments for built-in function: \"eq\"." },
     { ErrorType::LE_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Missing arguments for built-in function: \"le\"." },
     { ErrorType::NAND_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Missing arguments for built-in function: \"nand\"." },
