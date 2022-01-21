@@ -222,8 +222,7 @@ TEST_CASE("Compile complex funcitons")
 		compilator.compileCode(isEvenExampleWithNumber);
 		REQUIRE(!compilator.getIsCreated());
 		REQUIRE(compilator.getContainerSize() == 5);
-		// REQUIRE(compilator.output() == isCreated);
-		// isEven -> nand(isOdd(#0), 1)
+		REQUIRE(compilator.output() == std::multiset<double> {1});
 	}
 }
 
