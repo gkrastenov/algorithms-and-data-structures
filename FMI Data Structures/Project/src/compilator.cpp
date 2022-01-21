@@ -120,11 +120,9 @@ int Compilator::createTreeBody(const string& funCode)
 	for (size_t i = index; i < funCode.size(); i++)
 	{
 		if (curr == " ")
-		{
 			curr = "";
-			curr.push_back(funCode[i]);
-			continue;
-		}else if (funCode[i] == ' ' && curr != ""){		
+
+		if (funCode[i] == ' ' && curr != ""){		
 			if (isalnum(curr[0]) || curr[0] == '-')
 				createNumberNode(stack, curr);
 				
@@ -295,7 +293,7 @@ void Compilator::head(ASTNode* root, Function& listFunciton)
 	if (listFunciton.getType() == FunctionType::CREATED_LIST || listFunciton.getType() == FunctionType::NOT_CREATED_LIST)
 	{
 		if (listFunciton.getList().size() >= 1)
-			listFunciton.replaceList(listFunciton.getList().front());
+			root->getFunction().replaceList(listFunciton.getList().front());
 		// what to throw if i have head([])
 	}
 	// TODO: trow exeption for not correct type

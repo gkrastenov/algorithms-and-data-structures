@@ -58,7 +58,7 @@ public:
 	void addList(const LList<double> otherList);
 
 	void replaceList(const double number) { this->list = number; }	
-	void replaceList(const size_t index,const LList<double>& list);
+	void replaceList(const size_t index, const LList<double>& list);
 
 private:
 	void copy(const Function& other);
