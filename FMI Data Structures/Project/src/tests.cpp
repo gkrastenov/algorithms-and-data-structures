@@ -22,6 +22,65 @@ TEST_CASE("Run built-in function")
 		REQUIRE(compilator.getErrorType() == ErrorType::ARGUMENT_EXEPTION);
 	}
 
+	SECTION("Run built-in function in: eq")
+	{
+		std::multiset<double> isTrue{1};
+		std::multiset<double> isFalse{0};
+
+		std::stringstream myErrEq1("eq(5)");
+		REQUIRE_THROWS(compilator.compileCode(myErrEq1));
+		REQUIRE(compilator.getErrorType() == ErrorType::ARGUMENT_EXEPTION);
+
+		std::stringstream myErrEq2("eq([5])");
+		REQUIRE_THROWS(compilator.compileCode(myErrEq2));
+		REQUIRE(compilator.getErrorType() == ErrorType::ARGUMENT_EXEPTION);
+
+		std::stringstream myEq1("eq(5, 5)");
+		compilator.compileCode(myEq1);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == isTrue);
+
+		std::stringstream myEq2("eq(5, 5.1)");
+		compilator.compileCode(myEq2);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == isFalse);
+
+		std::stringstream myEq3("eq(5.1, 5)");
+		compilator.compileCode(myEq3);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == isFalse);
+
+		std::stringstream myEq4("eq([1 2], [1 2])");
+		compilator.compileCode(myEq4);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == isTrue);
+
+		std::stringstream myEq5("eq([2 1], [1 2])");
+		compilator.compileCode(myEq5);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == isFalse);
+
+		std::stringstream myEq6("eq([], [])");
+		compilator.compileCode(myEq6);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == isTrue);
+
+		std::stringstream myEq7("eq(2, [2 1])");
+		compilator.compileCode(myEq7);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == isFalse);
+
+		std::stringstream myEq8("eq(2, [2])");
+		compilator.compileCode(myEq8);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == isTrue);
+
+		std::stringstream myEq9("eq(5.1, 5.1)");
+		compilator.compileCode(myEq9);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == isTrue);
+	}
+
 	SECTION("Run built-in function in: mod")
 	{
 		std::stringstream myMod("mod(5 2)");

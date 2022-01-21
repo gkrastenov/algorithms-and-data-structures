@@ -156,14 +156,16 @@ int Compilator::createTreeBody(const string& funCode)
 			if (minus) 
 				setErrorLogger(ErrorType::SYNTAX_MINUS_BEFORE_LIST_RBRACE);
 
-			closedListBracket = true;
+			openListBracket = false;
+			closedListBracket = false;
+			/*
 			if (curr == "")
 				continue;
-
+			*/
 			if (isalnum(curr[0]) || curr[0] == '-')
 				createNumberNode(stack, curr);
 			if (!stack.empty())
-				stack.pop();
+				 stack.pop();
 			curr = "";
 			continue;
 		}
@@ -204,7 +206,7 @@ int Compilator::createTreeBody(const string& funCode)
 
 			curr = "";
 			continue;
-		}				
+		}	
 		curr.push_back(funCode[i]);
 	}
 }
@@ -224,10 +226,18 @@ ASTNode* Compilator::runTreeBody(ASTNode* astNode)
 		auto curr = runTreeBody(astNode->getChildrenNodeByIndex(i));
 		auto childFunction = curr->getFunction();
 
+		if (astNode->getFunction().getType() == FunctionType::EQ) {
+			if (astNode->getChindrenSize() != 2)
+				setErrorLogger(ErrorType::ARGUMENT_EXEPTION);
+			if (i == 1) {
+				eq(astNode);
+				continue;
+			}
+		}
+
 		if (astNode->getFunction().getType() == FunctionType::MOD) {
 			if (astNode->getChindrenSize() != 2)
 				setErrorLogger(ErrorType::ARGUMENT_EXEPTION);
-
 			if (i == 1) {
 				mod(astNode);
 				continue;
@@ -256,7 +266,8 @@ ASTNode* Compilator::runTreeBody(ASTNode* astNode)
 		}
 
 		if (astNode->getFunction().getType() == FunctionType::NOT_CREATED_LIST) {
-			if (childFunction.getType() == FunctionType::NUMBER) {
+			if (childFunction.getType() == FunctionType::NUMBER 
+				|| childFunction.getType() == FunctionType::NOT_CREATED_LIST) {
 				astNode->getFunction().addList(childFunction.getList());
 			}
 			else {
@@ -264,6 +275,7 @@ ASTNode* Compilator::runTreeBody(ASTNode* astNode)
 				throw "ARGUMENT_ONLY_NUMBERS";
 			}
 		}
+
 	}
 
 	if (astNode->getFunction().getType() == FunctionType::NOT_CREATED_LIST) {
@@ -319,7 +331,14 @@ void Compilator::mod(ASTNode* root)
 	|| divisor != children[1]->getFunction().getList().front())
 		setErrorLogger(ErrorType::MOD_WORK_ONLY_WITH_INTEGERS);
 
-	root->getFunction().replaceList(divindend % divisor);
+	root->getFunction().replaceList(divindend % divisor);		
+}
+
+void Compilator::eq(ASTNode* root)
+{
+	auto children = root->getChildrenNodes(); // vector
+	int result = children[0]->getFunction().getList().compare(children[1]->getFunction().getList());
+	root->getFunction().replaceList(result);
 }
 
 

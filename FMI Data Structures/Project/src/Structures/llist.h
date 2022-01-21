@@ -49,6 +49,7 @@ public:
     T pop_atPos(size_t pos);
 
     LList& replace_fromPos(const size_t pos, const LList& other);
+    int compare(const LList<T>& other);
     void print(std::multiset<T>& set) const;
 private:
     Node* head, * tail;
@@ -313,6 +314,27 @@ inline LList<T>& LList<T>::replace_fromPos(const size_t pos, const LList& other)
         }
     }
     return *this;
+}
+
+template<class T>
+inline int LList<T>::compare(const LList<T>& other)
+{
+    if (sz != other.size())
+        return 0;
+
+    if (sz == 1 && other.size() == 1)
+        return this->front() == other.front();
+
+    Node* firstTemp = this->head;
+    Node* secondTemp = other.head;
+    while (firstTemp != nullptr && secondTemp != nullptr)
+    {
+        if (firstTemp->data != secondTemp->data)
+            return 0;
+        firstTemp = firstTemp->next;
+        secondTemp = secondTemp->next;
+   }
+    return 1;
 }
 
 template<class T>

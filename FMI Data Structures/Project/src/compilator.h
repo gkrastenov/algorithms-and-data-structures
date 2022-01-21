@@ -77,7 +77,7 @@ private:
 	void tail(ASTNode* root, Function& listFunciton);
 	void integer(ASTNode* root, Function& numberFunction);
 	void mod(ASTNode* root);
-
+	void eq(ASTNode* root);
 
 	string buildCompileCode(const string& code, const std::vector<string>& arguments);
 	bool replace(string& str, const string& from, const string& to);
