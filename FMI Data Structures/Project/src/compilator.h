@@ -78,10 +78,13 @@ private:
 	void integer(ASTNode* root, Function& numberFunction);
 	void mod(ASTNode* root);
 	void eq(ASTNode* root);
+	void nand(ASTNode* root);
 
 	string buildCompileCode(const string& code, const std::vector<string>& arguments);
 	bool replace(string& str, const string& from, const string& to);
 
 	std::vector<string> getArguments(std::string& code) const;
 	unsigned int countArguments(std::string& code) const;
+
+	bool isTypeList(const FunctionType type) const;
 };

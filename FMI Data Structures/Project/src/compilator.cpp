@@ -229,6 +229,15 @@ ASTNode* Compilator::runTreeBody(ASTNode* astNode)
 		auto curr = runTreeBody(astNode->getChildrenNodeByIndex(i));
 		auto childFunction = curr->getFunction();
 
+		if (astNode->getFunction().getType() == FunctionType::NAND) {
+			if (astNode->getChindrenSize() != 2)
+				setErrorLogger(ErrorType::ARGUMENT_EXEPTION);
+			if (i == 1) {
+				nand(astNode);
+				continue;
+			}
+		}
+
 		if (astNode->getFunction().getType() == FunctionType::EQ) {
 			if (astNode->getChindrenSize() != 2)
 				setErrorLogger(ErrorType::ARGUMENT_EXEPTION);
@@ -290,7 +299,7 @@ ASTNode* Compilator::runTreeBody(ASTNode* astNode)
 
 void Compilator::head(ASTNode* root, Function& listFunciton)
 {
-	if (listFunciton.getType() == FunctionType::CREATED_LIST || listFunciton.getType() == FunctionType::NOT_CREATED_LIST)
+	if (isTypeList(listFunciton.getType()))
 	{
 		if (listFunciton.getList().size() >= 1)
 			root->getFunction().replaceList(listFunciton.getList().front());
@@ -301,7 +310,7 @@ void Compilator::head(ASTNode* root, Function& listFunciton)
 
 void Compilator::tail(ASTNode* root, Function& listFunciton)
 {
-	 if (listFunciton.getType() == FunctionType::CREATED_LIST || listFunciton.getType() == FunctionType::NOT_CREATED_LIST)
+	 if (isTypeList(listFunciton.getType()))
 	{
 		if (listFunciton.getList().size() >= 1)
 			root->getFunction().replaceList(1, listFunciton.getList());
@@ -344,6 +353,36 @@ void Compilator::eq(ASTNode* root)
 	root->getFunction().replaceList(result);
 }
 
+void Compilator::nand(ASTNode* root)
+{
+	auto children = root->getChildrenNodes(); // vector
+
+	bool firstIsNand;
+	bool secondIsNand;
+
+	// first argument
+	if (isTypeList(children[0]->getFunction().getType()))
+	{
+		firstIsNand = children[0]->getFunction().getList().nand();
+	}else {
+		if (children[0]->getFunction().getList().size() == 0)
+			firstIsNand = false;
+	   else firstIsNand = children[0]->getFunction().getList().front() != 0;
+	}
+
+	// second argument
+	if (isTypeList(children[1]->getFunction().getType())) 
+	{
+		secondIsNand = children[1]->getFunction().getList().nand();
+	}else {
+		if (children[1]->getFunction().getList().size() == 0)
+			secondIsNand = false;
+       else secondIsNand = children[1]->getFunction().getList().front() != 0;
+	}
+
+	bool result = firstIsNand || secondIsNand;
+	root->getFunction().replaceList(result);
+}
 
 std::vector<string> Compilator::getArguments(std::string& code) const
 {
@@ -383,19 +422,23 @@ std::vector<string> Compilator::getArguments(std::string& code) const
 	return arguments;
 }
 
-
-unsigned int Compilator::countArguments(std::string& code) const
+unsigned int Compilator::countArguments(string& code) const
 {
 	unsigned int occurrences = 0;
-	std::string::size_type pos = 0;
-	std::string target = "#";
-	while ((pos = code.find(target, pos)) != std::string::npos) {
+	string::size_type pos = 0;
+	string target = "#";
+	while ((pos = code.find(target, pos)) != string::npos) {
 		++occurrences;
 		pos += target.length();
 	}
 	return occurrences;
 }
 
+bool Compilator::isTypeList(const FunctionType type) const
+{
+	return type == FunctionType::LIST || type == FunctionType::CREATED_LIST
+		|| type == FunctionType::NOT_CREATED_LIST || type == FunctionType::TAIL;
+}
 
 FunctionType Compilator::getFunctionType(const string& funcName) const
 {

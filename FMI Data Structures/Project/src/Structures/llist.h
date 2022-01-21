@@ -49,7 +49,9 @@ public:
     T pop_atPos(size_t pos);
 
     LList& replace_fromPos(const size_t pos, const LList& other);
-    int compare(const LList<T>& other);
+    bool compare(const LList<T>& other);
+    bool nand();
+
     void print(std::multiset<T>& set) const;
 private:
     Node* head, * tail;
@@ -317,10 +319,10 @@ inline LList<T>& LList<T>::replace_fromPos(const size_t pos, const LList& other)
 }
 
 template<class T>
-inline int LList<T>::compare(const LList<T>& other)
+inline bool LList<T>::compare(const LList<T>& other)
 {
     if (sz != other.size())
-        return 0;
+        return false;
 
     if (sz == 1 && other.size() == 1)
         return this->front() == other.front();
@@ -330,11 +332,17 @@ inline int LList<T>::compare(const LList<T>& other)
     while (firstTemp != nullptr && secondTemp != nullptr)
     {
         if (firstTemp->data != secondTemp->data)
-            return 0;
+            return false;
         firstTemp = firstTemp->next;
         secondTemp = secondTemp->next;
    }
-    return 1;
+    return true;
+}
+
+template<class T>
+inline bool LList<T>::nand()
+{
+    return sz != 0;
 }
 
 template<class T>

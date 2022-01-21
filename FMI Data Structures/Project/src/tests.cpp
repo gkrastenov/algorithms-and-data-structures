@@ -108,6 +108,51 @@ TEST_CASE("Run built-in function")
 		REQUIRE_THROWS(compilator.compileCode(myErrorMod5));
 		REQUIRE(compilator.getErrorType() == ErrorType::MOD_WORK_ONLY_WITH_INTEGERS);
 	}
+	SECTION("Run built-in function in: mod") 
+	{
+		std::multiset<double> isTrue  {1};
+		std::multiset<double> isFalse {0};
+
+		std::stringstream myNand1("nand(5)");
+		REQUIRE_THROWS(compilator.compileCode(myNand1));
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.getErrorType() == ErrorType::ARGUMENT_EXEPTION);
+
+		std::stringstream myNand2("nand([5 3 2])");
+		REQUIRE_THROWS(compilator.compileCode(myNand2));
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.getErrorType() == ErrorType::ARGUMENT_EXEPTION);
+
+		std::stringstream myNand3("nand(5, 5)");
+		compilator.compileCode(myNand3);
+		REQUIRE(compilator.output() == isTrue);
+
+		std::stringstream myNand4("nand(5, 0)");
+		compilator.compileCode(myNand4);
+		REQUIRE(compilator.output() == isTrue);
+
+		std::stringstream myNand5("nand(0, 0)");
+		compilator.compileCode(myNand5);
+		REQUIRE(compilator.output() == isFalse);
+
+		std::stringstream myNand6("nand([], [])");
+		compilator.compileCode(myNand6);
+		REQUIRE(compilator.output() == isFalse);
+
+		std::stringstream myNand7("nand([1], [])");
+		compilator.compileCode(myNand7);
+		REQUIRE(compilator.output() == isTrue);
+
+		std::stringstream myNand8("nand([1 2], [3])");
+		compilator.compileCode(myNand8);
+		REQUIRE(compilator.output() == isTrue);
+
+		std::stringstream myNand9("nand(5, [5 3 2])");
+		compilator.compileCode(myNand9);
+		REQUIRE(compilator.output() == isTrue);
+
+		REQUIRE(compilator.getContainerSize() == 0);
+	}
 }
 
 TEST_CASE("Compile complex funcitons")
@@ -166,6 +211,19 @@ TEST_CASE("Compile complex funcitons")
 		REQUIRE(compilator.getContainerSize() == 4);
 		std::multiset<double> expected2{ 3 };
 		REQUIRE(compilator.output() == expected2);
+
+		std::stringstream isEven("isEven -> nand(isOdd(#0), 1)");
+		compilator.compileCode(isEven);
+		REQUIRE(compilator.getIsCreated());
+		REQUIRE(compilator.getContainerSize() == 5);
+		REQUIRE(compilator.output() == isCreated);
+
+		std::stringstream isEvenExampleWithNumber("isEven(myNumber())");
+		compilator.compileCode(isEvenExampleWithNumber);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.getContainerSize() == 5);
+		// REQUIRE(compilator.output() == isCreated);
+		// isEven -> nand(isOdd(#0), 1)
 	}
 }
 
