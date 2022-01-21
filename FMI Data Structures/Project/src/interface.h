@@ -1,7 +1,5 @@
 ﻿#pragma once
 #include <string>
-#include <iostream>
-#include <list>
 
 #include "Structures/llist.h"
 

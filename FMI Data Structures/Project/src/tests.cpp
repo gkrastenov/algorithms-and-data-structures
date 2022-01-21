@@ -223,6 +223,7 @@ TEST_CASE("Compile complex funcitons")
 		REQUIRE(!compilator.getIsCreated());
 		REQUIRE(compilator.getContainerSize() == 5);
 		REQUIRE(compilator.output() == std::multiset<double> {1});
+
 	}
 }
 
