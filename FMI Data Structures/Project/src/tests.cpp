@@ -150,7 +150,7 @@ TEST_CASE("Compile complex funcitons")
 		std::stringstream isOddCallNumber("isOdd(myNumber())");
 		compilator.compileCode(isOddCallNumber);
 		REQUIRE(!compilator.getIsCreated());
-		REQUIRE(compilator.getContainerSize() == 1);
+		REQUIRE(compilator.getContainerSize() == 3);
 		REQUIRE(compilator.output() == std::multiset<double>{1});
 
 		std::stringstream myList("myList1 -> [3 4 5 7 9 10]");
@@ -163,7 +163,7 @@ TEST_CASE("Compile complex funcitons")
 		std::stringstream head("head(myList1())");
 		compilator.compileCode(head);
 		REQUIRE(!compilator.getIsCreated());
-		REQUIRE(compilator.getContainerSize() == 1);
+		REQUIRE(compilator.getContainerSize() == 4);
 		std::multiset<double> expected2{ 3 };
 		REQUIRE(compilator.output() == expected2);
 	}

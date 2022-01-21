@@ -23,7 +23,7 @@ string Compilator::buildCompileCode(const string& code, const std::vector<string
 					if (i == code.size()) 
 						setErrorLogger(ErrorType::SYNTAX_INVALID);
 				
-					curr.push_back(code[i]);
+					curr.push_back(buildCode[i]);
 				}
 				if (replace(buildCode, curr, newCode) == false)
 					setErrorLogger(ErrorType::NOT_FOUNDED_FUNCTION); // TODO: Change error type with: cant be replaced string or something else.
@@ -40,8 +40,8 @@ string Compilator::buildCompileCode(const string& code, const std::vector<string
 			if (replace(buildCode, curr, arguments[index]) == false)
 				throw "Can not be parsed arguments";
 
+			i -= curr.size() + 1;
 			curr = "";
-			--i;
 			++index;
 			continue;
 		}	
@@ -119,7 +119,12 @@ int Compilator::createTreeBody(const string& funCode)
 
 	for (size_t i = index; i < funCode.size(); i++)
 	{
-		if (funCode[i] == ' ' && curr != ""){		
+		if (curr == " ")
+		{
+			curr = "";
+			curr.push_back(funCode[i]);
+			continue;
+		}else if (funCode[i] == ' ' && curr != ""){		
 			if (isalnum(curr[0]) || curr[0] == '-')
 				createNumberNode(stack, curr);
 				
