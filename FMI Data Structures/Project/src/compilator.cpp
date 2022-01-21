@@ -312,11 +312,12 @@ void Compilator::mod(ASTNode* root)
 	|| children[1]->getFunction().getList().size() != 1)
 		setErrorLogger(ErrorType::ARGUMENT_EXEPTION);
 
-	if(children[1]->getFunction().getList().front() == 0)
-		setErrorLogger(ErrorType::DIVIDE_BY_ZERO);
-
 	int divindend = children[0]->getFunction().getList().front();
 	int divisor = children[1]->getFunction().getList().front();
+
+	if(divindend != children[0]->getFunction().getList().front()
+	|| divisor != children[1]->getFunction().getList().front())
+		setErrorLogger(ErrorType::MOD_WORK_ONLY_WITH_INTEGERS);
 
 	root->getFunction().replaceList(divindend % divisor);
 }

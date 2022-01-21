@@ -37,9 +37,17 @@ TEST_CASE("Run built-in function")
 		REQUIRE_THROWS(compilator.compileCode(myErrorMod2));
 		REQUIRE(compilator.getErrorType() == ErrorType::ARGUMENT_EXEPTION);
 
-		std::stringstream myErrorMod3("mod(5 0)");
+		std::stringstream myErrorMod3("mod(5.2 1)");
 		REQUIRE_THROWS(compilator.compileCode(myErrorMod3));
-		REQUIRE(compilator.getErrorType() == ErrorType::DIVIDE_BY_ZERO);
+		REQUIRE(compilator.getErrorType() == ErrorType::MOD_WORK_ONLY_WITH_INTEGERS);
+
+		std::stringstream myErrorMod4("mod(5 1.1)");
+		REQUIRE_THROWS(compilator.compileCode(myErrorMod4));
+		REQUIRE(compilator.getErrorType() == ErrorType::MOD_WORK_ONLY_WITH_INTEGERS);
+
+		std::stringstream myErrorMod5("mod(5.1 1.1)");
+		REQUIRE_THROWS(compilator.compileCode(myErrorMod5));
+		REQUIRE(compilator.getErrorType() == ErrorType::MOD_WORK_ONLY_WITH_INTEGERS);
 	}
 }
 
