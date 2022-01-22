@@ -77,6 +77,9 @@ private:
 	void mod(ASTNode* root);
 	void eq(ASTNode* root);
 	void nand(ASTNode* root);
+	void add(ASTNode* root);
+	void sqrt(ASTNode* root, Function& numberFunction);
+	void sub(ASTNode* root);
 
 	string buildCompileCode(const string& code, const std::vector<string>& arguments);
 	bool replace(string& str, const string& from, const string& to);

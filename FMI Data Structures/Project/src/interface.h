@@ -27,6 +27,7 @@ enum class FunctionType
 	WRITE,
 	MOD,
 	NAND,
+	SUB,
 	UNKNOWN,
 };
 

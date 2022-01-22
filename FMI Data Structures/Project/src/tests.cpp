@@ -108,7 +108,7 @@ TEST_CASE("Run built-in function")
 		REQUIRE_THROWS(compilator.compileCode(myErrorMod5));
 		REQUIRE(compilator.getErrorType() == ErrorType::MOD_WORK_ONLY_WITH_INTEGERS);
 	}
-	SECTION("Run built-in function in: mod") 
+	SECTION("Run built-in function in: nand") 
 	{
 		std::multiset<double> isTrue  {1};
 		std::multiset<double> isFalse {0};
@@ -150,6 +150,94 @@ TEST_CASE("Run built-in function")
 		std::stringstream myNand9("nand(5, [5 3 2])");
 		compilator.compileCode(myNand9);
 		REQUIRE(compilator.output() == isTrue);
+
+		REQUIRE(compilator.getContainerSize() == 0);
+	}
+	SECTION("Run built-in function in: sqrt")
+	{
+		std::stringstream mySqrt1("sqrt(25)");
+		compilator.compileCode(mySqrt1);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == std::multiset<double>{5});
+
+		std::stringstream mySqrt2("sqrt(25, 30)");
+		REQUIRE_THROWS(compilator.compileCode(mySqrt2));
+		REQUIRE(compilator.getErrorType() == ErrorType::ARGUMENT_EXEPTION);
+
+		std::stringstream mySqrt3("sqrt([1 2])");
+		REQUIRE_THROWS(compilator.compileCode(mySqrt3));
+		REQUIRE(compilator.getErrorType() == ErrorType::ARGUMENT_EXEPTION);
+
+		std::stringstream mySqrt4("sqrt([])");
+		REQUIRE_THROWS(compilator.compileCode(mySqrt4));
+		REQUIRE(compilator.getErrorType() == ErrorType::ARGUMENT_EXEPTION);
+
+		std::stringstream mySqrt5("sqrt(9)");
+		compilator.compileCode(mySqrt5);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == std::multiset<double>{3});
+
+		REQUIRE(compilator.getContainerSize() == 0);
+	}
+	SECTION("Run built-in function in: add")
+	{
+		std::stringstream myAdd1("add(25, 25)");
+		compilator.compileCode(myAdd1);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == std::multiset<double>{50});
+
+		std::stringstream myAdd2("add(0, 0)");
+		compilator.compileCode(myAdd2);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == std::multiset<double>{0});
+
+		std::stringstream myAdd3("add([])");
+		REQUIRE_THROWS(compilator.compileCode(myAdd3));
+		REQUIRE(compilator.getErrorType() == ErrorType::ARGUMENT_EXEPTION);
+
+		std::stringstream myAdd4("add([1])");
+		REQUIRE_THROWS(compilator.compileCode(myAdd4));
+		REQUIRE(compilator.getErrorType() == ErrorType::ARGUMENT_EXEPTION);
+
+		std::stringstream myAdd5("add(5, [1])");
+		REQUIRE_THROWS(compilator.compileCode(myAdd5));
+		REQUIRE(compilator.getErrorType() == ErrorType::ARGUMENT_EXEPTION);
+
+		std::stringstream myAdd6("add(25, -25)");
+		compilator.compileCode(myAdd6);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == std::multiset<double>{0});
+
+		REQUIRE(compilator.getContainerSize() == 0);
+	}
+	SECTION("Run built-in function in: sub")
+	{
+		std::stringstream mySub1("sub(25, 25)");
+		compilator.compileCode(mySub1);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == std::multiset<double>{0});
+
+		std::stringstream mySub2("sub(25, -25)");
+		compilator.compileCode(mySub2);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == std::multiset<double>{50});
+
+		std::stringstream mySub3("sub(1, 25)");
+		compilator.compileCode(mySub3);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == std::multiset<double>{-24});
+
+		std::stringstream mySub5("sub(5)");
+		REQUIRE_THROWS(compilator.compileCode(mySub5));
+		REQUIRE(compilator.getErrorType() == ErrorType::ARGUMENT_EXEPTION);
+
+		std::stringstream mySub6("sub([], [1])");
+		REQUIRE_THROWS(compilator.compileCode(mySub6));
+		REQUIRE(compilator.getErrorType() == ErrorType::ARGUMENT_EXEPTION);
+
+		std::stringstream mySub7("sub([1 2])");
+		REQUIRE_THROWS(compilator.compileCode(mySub7));
+		REQUIRE(compilator.getErrorType() == ErrorType::ARGUMENT_EXEPTION);
 
 		REQUIRE(compilator.getContainerSize() == 0);
 	}

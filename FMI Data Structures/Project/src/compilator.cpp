@@ -229,55 +229,58 @@ ASTNode* Compilator::runTreeBody(ASTNode* astNode)
 		auto curr = runTreeBody(astNode->getChildrenNodeByIndex(i));
 		auto childFunction = curr->getFunction();
 
-		if (astNode->getFunction().getType() == FunctionType::NAND) {
-			if (astNode->getChindrenSize() != 2)
-				setErrorLogger(ErrorType::ARGUMENT_EXEPTION);
-			if (i == 1) {
-				nand(astNode);
-				continue;
-			}
-		}
-
-		if (astNode->getFunction().getType() == FunctionType::EQ) {
-			if (astNode->getChindrenSize() != 2)
-				setErrorLogger(ErrorType::ARGUMENT_EXEPTION);
-			if (i == 1) {
-				eq(astNode);
-				continue;
-			}
-		}
-
-		if (astNode->getFunction().getType() == FunctionType::MOD) {
-			if (astNode->getChindrenSize() != 2)
-				setErrorLogger(ErrorType::ARGUMENT_EXEPTION);
-			if (i == 1) {
-				mod(astNode);
-				continue;
-			}
-		}
-		else if (astNode->getFunction().getType() == FunctionType::INT) { // int
+		if (astNode->getFunction().getType() == FunctionType::SQRT) { // sqrt
 			if (astNode->getChindrenSize() != 1)
 				setErrorLogger(ErrorType::ARGUMENT_EXEPTION);
+			sqrt(astNode, childFunction);
 
+		}else if (astNode->getFunction().getType() == FunctionType::ADD) { // add
+			if (astNode->getChindrenSize() != 2)
+				setErrorLogger(ErrorType::ARGUMENT_EXEPTION);
+			if (i == 1) 
+				add(astNode);
+
+		}else if (astNode->getFunction().getType() == FunctionType::SUB) { // sub
+			if (astNode->getChindrenSize() != 2)
+				setErrorLogger(ErrorType::ARGUMENT_EXEPTION);
+			if (i == 1) 
+				sub(astNode);
+
+		}else if (astNode->getFunction().getType() == FunctionType::NAND) { // nand
+			if (astNode->getChindrenSize() != 2)
+				setErrorLogger(ErrorType::ARGUMENT_EXEPTION);
+			if (i == 1) 
+				nand(astNode);
+
+		}else if (astNode->getFunction().getType() == FunctionType::EQ) { // eq
+			if (astNode->getChindrenSize() != 2)
+				setErrorLogger(ErrorType::ARGUMENT_EXEPTION);
+			if (i == 1) 
+				eq(astNode);
+
+		}else if (astNode->getFunction().getType() == FunctionType::MOD) { // mod
+			if (astNode->getChindrenSize() != 2)
+				setErrorLogger(ErrorType::ARGUMENT_EXEPTION);
+			if (i == 1) 
+				mod(astNode);
+
+		} else if (astNode->getFunction().getType() == FunctionType::INT) { // int
+			if (astNode->getChindrenSize() != 1)
+				setErrorLogger(ErrorType::ARGUMENT_EXEPTION);
 			integer(astNode, childFunction);
-			continue;
-		}
-		else if (astNode->getFunction().getType() == FunctionType::TAIL) { // tail
+
+		} else if (astNode->getFunction().getType() == FunctionType::TAIL) { // tail
 			if (astNode->getChindrenSize() != 1)
 				errorLogger.setErrorType(ErrorType::ARGUMENT_EXEPTION);
-
 			tail(astNode, childFunction);
-			continue;
-		}
-		else if (astNode->getFunction().getType() == FunctionType::HEAD) {// head
+
+		} else if (astNode->getFunction().getType() == FunctionType::HEAD) {// head
 			if (astNode->getChindrenSize() != 1)
 				errorLogger.setErrorType(ErrorType::HEAD_ZERO_ARGUMENTS);
 			// add good exepetion, throw "HEAD_ZERO_ARGUMENTS"; HEAD_NOT_MATCHING_CORRECT_ARGUMENT
 			head(astNode, childFunction);
-			continue;
-		}
 
-		if (astNode->getFunction().getType() == FunctionType::NOT_CREATED_LIST) {
+		}else if (astNode->getFunction().getType() == FunctionType::NOT_CREATED_LIST) {
 			if (childFunction.getType() == FunctionType::NUMBER 
 				|| childFunction.getType() == FunctionType::NOT_CREATED_LIST) {
 				astNode->getFunction().addList(childFunction.getList());
@@ -287,7 +290,6 @@ ASTNode* Compilator::runTreeBody(ASTNode* astNode)
 				throw "ARGUMENT_ONLY_NUMBERS";
 			}
 		}
-
 	}
 
 	if (astNode->getFunction().getType() == FunctionType::NOT_CREATED_LIST) {
@@ -384,6 +386,54 @@ void Compilator::nand(ASTNode* root)
 	root->getFunction().replaceList(result);
 }
 
+void Compilator::add(ASTNode* root)
+{
+	auto children = root->getChildrenNodes(); //vector;
+
+	if (isTypeList(children[0]->getFunction().getType())
+	 || isTypeList(children[1]->getFunction().getType()))
+		setErrorLogger(ErrorType::ARGUMENT_EXEPTION);
+
+	if (children[0]->getFunction().getList().size() != 1 
+	 || children[1]->getFunction().getList().size() != 1)
+		setErrorLogger(ErrorType::ARGUMENT_EXEPTION);
+
+	double result = children[0]->getFunction().getList().front()
+		          + children[1]->getFunction().getList().front();
+
+	root->getFunction().replaceList(result);
+}
+
+void Compilator::sqrt(ASTNode* root, Function& numberFunction)
+{
+	if(isTypeList(numberFunction.getType()))
+		setErrorLogger(ErrorType::ARGUMENT_EXEPTION);
+
+	if(numberFunction.getList().size() != 1)
+		setErrorLogger(ErrorType::ARGUMENT_EXEPTION);
+
+	double result = std::sqrt(numberFunction.getList().front());
+	root->getFunction().replaceList(result);
+}
+
+void Compilator::sub(ASTNode* root)
+{
+	auto children = root->getChildrenNodes(); //vector;
+
+	if (isTypeList(children[0]->getFunction().getType())
+		|| isTypeList(children[1]->getFunction().getType()))
+		setErrorLogger(ErrorType::ARGUMENT_EXEPTION);
+
+	if (children[0]->getFunction().getList().size() != 1
+		|| children[1]->getFunction().getList().size() != 1)
+		setErrorLogger(ErrorType::ARGUMENT_EXEPTION);
+
+	double result = children[0]->getFunction().getList().front()
+		- children[1]->getFunction().getList().front();
+
+	root->getFunction().replaceList(result);
+}
+
 std::vector<string> Compilator::getArguments(std::string& code) const
 {
 	bool foundFirstOpenBracket = false; // before first open bracket is name of funciton
@@ -474,6 +524,8 @@ FunctionType Compilator::getFunctionType(const string& funcName) const
 		return FunctionType::READ;
 	if (funcName == "int")
 		return FunctionType::INT;
+	if (funcName == "sub")
+		return FunctionType::SUB;
 	return FunctionType::UNKNOWN;
 }
 
