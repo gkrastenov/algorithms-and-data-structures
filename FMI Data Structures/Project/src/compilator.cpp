@@ -228,45 +228,49 @@ ASTNode* Compilator::runTreeBody(ASTNode* astNode)
 	{
 		auto curr = runTreeBody(astNode->getChildrenNodeByIndex(i));
 		auto childFunction = curr->getFunction();
-
-		if (astNode->getFunction().getType() == FunctionType::SQRT) { // sqrt
+		if (astNode->getFunction().getType() == FunctionType::CONCAT) { // sqrt
 			if (astNode->getChindrenSize() != 1)
-				setErrorLogger(ErrorType::ARGUMENT_EXEPTION);
+				setErrorLogger(ErrorType::CONCAT_MISSING_ARGUMENTS);
+			concat(astNode);
+		}
+		else if (astNode->getFunction().getType() == FunctionType::SQRT) { // sqrt
+			if (astNode->getChindrenSize() != 1)
+				setErrorLogger(ErrorType::SQRT_MISSING_ARGUMENT);
 			sqrt(astNode, childFunction);
 
 		}else if (astNode->getFunction().getType() == FunctionType::ADD) { // add
 			if (astNode->getChindrenSize() != 2)
-				setErrorLogger(ErrorType::ARGUMENT_EXEPTION);
+				setErrorLogger(ErrorType::ADD_MISSING_ARGUMENTS);
 			if (i == 1) 
 				add(astNode);
 
 		}else if (astNode->getFunction().getType() == FunctionType::SUB) { // sub
 			if (astNode->getChindrenSize() != 2)
-				setErrorLogger(ErrorType::ARGUMENT_EXEPTION);
+				setErrorLogger(ErrorType::SUB_MISSING_ARGUMENTS);
 			if (i == 1) 
 				sub(astNode);
 
 		}else if (astNode->getFunction().getType() == FunctionType::NAND) { // nand
 			if (astNode->getChindrenSize() != 2)
-				setErrorLogger(ErrorType::ARGUMENT_EXEPTION);
+				setErrorLogger(ErrorType::NAND_MISSING_ARGUMENTS);
 			if (i == 1) 
 				nand(astNode);
 
 		}else if (astNode->getFunction().getType() == FunctionType::EQ) { // eq
 			if (astNode->getChindrenSize() != 2)
-				setErrorLogger(ErrorType::ARGUMENT_EXEPTION);
+				setErrorLogger(ErrorType::EQ_MISSING_ARGUMENTS);
 			if (i == 1) 
 				eq(astNode);
 
 		}else if (astNode->getFunction().getType() == FunctionType::MOD) { // mod
 			if (astNode->getChindrenSize() != 2)
-				setErrorLogger(ErrorType::ARGUMENT_EXEPTION);
+				setErrorLogger(ErrorType::MOD_MISSING_ARGUMENTS);
 			if (i == 1) 
 				mod(astNode);
 
 		} else if (astNode->getFunction().getType() == FunctionType::INT) { // int
 			if (astNode->getChindrenSize() != 1)
-				setErrorLogger(ErrorType::ARGUMENT_EXEPTION);
+				setErrorLogger(ErrorType::INT_MISSING_ARGUMENTS);
 			integer(astNode, childFunction);
 
 		} else if (astNode->getFunction().getType() == FunctionType::TAIL) { // tail
@@ -392,11 +396,11 @@ void Compilator::add(ASTNode* root)
 
 	if (isTypeList(children[0]->getFunction().getType())
 	 || isTypeList(children[1]->getFunction().getType()))
-		setErrorLogger(ErrorType::ARGUMENT_EXEPTION);
+		setErrorLogger(ErrorType::ADD_INCORRECT_ARGUMENTS);
 
 	if (children[0]->getFunction().getList().size() != 1 
 	 || children[1]->getFunction().getList().size() != 1)
-		setErrorLogger(ErrorType::ARGUMENT_EXEPTION);
+		setErrorLogger(ErrorType::ADD_INCORRECT_ARGUMENTS);
 
 	double result = children[0]->getFunction().getList().front()
 		          + children[1]->getFunction().getList().front();
@@ -407,10 +411,10 @@ void Compilator::add(ASTNode* root)
 void Compilator::sqrt(ASTNode* root, Function& numberFunction)
 {
 	if(isTypeList(numberFunction.getType()))
-		setErrorLogger(ErrorType::ARGUMENT_EXEPTION);
+		setErrorLogger(ErrorType::SQRT_INCORRECT_ARGUMENTS);
 
 	if(numberFunction.getList().size() != 1)
-		setErrorLogger(ErrorType::ARGUMENT_EXEPTION);
+		setErrorLogger(ErrorType::SQRT_INCORRECT_ARGUMENTS);
 
 	double result = std::sqrt(numberFunction.getList().front());
 	root->getFunction().replaceList(result);
@@ -422,16 +426,27 @@ void Compilator::sub(ASTNode* root)
 
 	if (isTypeList(children[0]->getFunction().getType())
 		|| isTypeList(children[1]->getFunction().getType()))
-		setErrorLogger(ErrorType::ARGUMENT_EXEPTION);
+		setErrorLogger(ErrorType::SUB_INCORRECT_ARGUMENTS);
 
 	if (children[0]->getFunction().getList().size() != 1
 		|| children[1]->getFunction().getList().size() != 1)
-		setErrorLogger(ErrorType::ARGUMENT_EXEPTION);
+		setErrorLogger(ErrorType::SUB_INCORRECT_ARGUMENTS);
 
 	double result = children[0]->getFunction().getList().front()
 		- children[1]->getFunction().getList().front();
 
 	root->getFunction().replaceList(result);
+}
+
+void Compilator::concat(ASTNode* root)
+{
+	auto children = root->getChildrenNodes(); //vector;
+
+	if (isTypeList(children[0]->getFunction().getType()) == false
+		|| isTypeList(children[1]->getFunction().getType()) == false)
+		setErrorLogger(ErrorType::CONCAT_INCORRECT_ARGUMENTS);
+
+	// TODO::
 }
 
 std::vector<string> Compilator::getArguments(std::string& code) const

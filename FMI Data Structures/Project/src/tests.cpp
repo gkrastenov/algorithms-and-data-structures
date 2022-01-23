@@ -15,11 +15,11 @@ TEST_CASE("Run built-in function")
 
 		std::stringstream myErrorInt("int(5.2, 5)");
 		REQUIRE_THROWS(compilator.compileCode(myErrorInt));
-		REQUIRE(compilator.getErrorType() == ErrorType::ARGUMENT_EXEPTION);
+		REQUIRE(compilator.getErrorType() == ErrorType::INT_MISSING_ARGUMENTS);
 
 		std::stringstream myErrorListInt("int([5 2 5])");
 		REQUIRE_THROWS(compilator.compileCode(myErrorListInt));
-		REQUIRE(compilator.getErrorType() == ErrorType::ARGUMENT_EXEPTION);
+		REQUIRE(compilator.getErrorType() == ErrorType::INT_MISSING_ARGUMENTS);
 	}
 
 	SECTION("Run built-in function in: eq")
@@ -29,11 +29,11 @@ TEST_CASE("Run built-in function")
 
 		std::stringstream myErrEq1("eq(5)");
 		REQUIRE_THROWS(compilator.compileCode(myErrEq1));
-		REQUIRE(compilator.getErrorType() == ErrorType::ARGUMENT_EXEPTION);
+		REQUIRE(compilator.getErrorType() == ErrorType::EQ_MISSING_ARGUMENTS);
 
 		std::stringstream myErrEq2("eq([5])");
 		REQUIRE_THROWS(compilator.compileCode(myErrEq2));
-		REQUIRE(compilator.getErrorType() == ErrorType::ARGUMENT_EXEPTION);
+		REQUIRE(compilator.getErrorType() == ErrorType::EQ_MISSING_ARGUMENTS);
 
 		std::stringstream myEq1("eq(5, 5)");
 		compilator.compileCode(myEq1);
@@ -90,11 +90,11 @@ TEST_CASE("Run built-in function")
 
 		std::stringstream myErrorMod1("mod(5)");
 		REQUIRE_THROWS(compilator.compileCode(myErrorMod1));
-		REQUIRE(compilator.getErrorType() == ErrorType::ARGUMENT_EXEPTION);
+		REQUIRE(compilator.getErrorType() == ErrorType::MOD_MISSING_ARGUMENTS);
 
 		std::stringstream myErrorMod2("mod([5 4 6 2])");
 		REQUIRE_THROWS(compilator.compileCode(myErrorMod2));
-		REQUIRE(compilator.getErrorType() == ErrorType::ARGUMENT_EXEPTION);
+		REQUIRE(compilator.getErrorType() == ErrorType::MOD_MISSING_ARGUMENTS);
 
 		std::stringstream myErrorMod3("mod(5.2 1)");
 		REQUIRE_THROWS(compilator.compileCode(myErrorMod3));
@@ -116,12 +116,12 @@ TEST_CASE("Run built-in function")
 		std::stringstream myNand1("nand(5)");
 		REQUIRE_THROWS(compilator.compileCode(myNand1));
 		REQUIRE(!compilator.getIsCreated());
-		REQUIRE(compilator.getErrorType() == ErrorType::ARGUMENT_EXEPTION);
+		REQUIRE(compilator.getErrorType() == ErrorType::NAND_MISSING_ARGUMENTS);
 
 		std::stringstream myNand2("nand([5 3 2])");
 		REQUIRE_THROWS(compilator.compileCode(myNand2));
 		REQUIRE(!compilator.getIsCreated());
-		REQUIRE(compilator.getErrorType() == ErrorType::ARGUMENT_EXEPTION);
+		REQUIRE(compilator.getErrorType() == ErrorType::NAND_MISSING_ARGUMENTS);
 
 		std::stringstream myNand3("nand(5, 5)");
 		compilator.compileCode(myNand3);
@@ -162,15 +162,15 @@ TEST_CASE("Run built-in function")
 
 		std::stringstream mySqrt2("sqrt(25, 30)");
 		REQUIRE_THROWS(compilator.compileCode(mySqrt2));
-		REQUIRE(compilator.getErrorType() == ErrorType::ARGUMENT_EXEPTION);
+		REQUIRE(compilator.getErrorType() == ErrorType::SQRT_MISSING_ARGUMENT);
 
 		std::stringstream mySqrt3("sqrt([1 2])");
 		REQUIRE_THROWS(compilator.compileCode(mySqrt3));
-		REQUIRE(compilator.getErrorType() == ErrorType::ARGUMENT_EXEPTION);
+		REQUIRE(compilator.getErrorType() == ErrorType::SQRT_INCORRECT_ARGUMENTS);
 
 		std::stringstream mySqrt4("sqrt([])");
 		REQUIRE_THROWS(compilator.compileCode(mySqrt4));
-		REQUIRE(compilator.getErrorType() == ErrorType::ARGUMENT_EXEPTION);
+		REQUIRE(compilator.getErrorType() == ErrorType::SQRT_INCORRECT_ARGUMENTS);
 
 		std::stringstream mySqrt5("sqrt(9)");
 		compilator.compileCode(mySqrt5);
@@ -193,20 +193,24 @@ TEST_CASE("Run built-in function")
 
 		std::stringstream myAdd3("add([])");
 		REQUIRE_THROWS(compilator.compileCode(myAdd3));
-		REQUIRE(compilator.getErrorType() == ErrorType::ARGUMENT_EXEPTION);
+		REQUIRE(compilator.getErrorType() == ErrorType::ADD_MISSING_ARGUMENTS);
 
 		std::stringstream myAdd4("add([1])");
 		REQUIRE_THROWS(compilator.compileCode(myAdd4));
-		REQUIRE(compilator.getErrorType() == ErrorType::ARGUMENT_EXEPTION);
+		REQUIRE(compilator.getErrorType() == ErrorType::ADD_MISSING_ARGUMENTS);
 
 		std::stringstream myAdd5("add(5, [1])");
 		REQUIRE_THROWS(compilator.compileCode(myAdd5));
-		REQUIRE(compilator.getErrorType() == ErrorType::ARGUMENT_EXEPTION);
+		REQUIRE(compilator.getErrorType() == ErrorType::ADD_INCORRECT_ARGUMENTS);
 
 		std::stringstream myAdd6("add(25, -25)");
 		compilator.compileCode(myAdd6);
 		REQUIRE(!compilator.getIsCreated());
 		REQUIRE(compilator.output() == std::multiset<double>{0});
+
+		std::stringstream myAdd7("add([3], [1])");
+		REQUIRE_THROWS(compilator.compileCode(myAdd7));
+		REQUIRE(compilator.getErrorType() == ErrorType::ADD_INCORRECT_ARGUMENTS);
 
 		REQUIRE(compilator.getContainerSize() == 0);
 	}
@@ -229,18 +233,61 @@ TEST_CASE("Run built-in function")
 
 		std::stringstream mySub5("sub(5)");
 		REQUIRE_THROWS(compilator.compileCode(mySub5));
-		REQUIRE(compilator.getErrorType() == ErrorType::ARGUMENT_EXEPTION);
+		REQUIRE(compilator.getErrorType() == ErrorType::SUB_MISSING_ARGUMENTS);
 
 		std::stringstream mySub6("sub([], [1])");
 		REQUIRE_THROWS(compilator.compileCode(mySub6));
-		REQUIRE(compilator.getErrorType() == ErrorType::ARGUMENT_EXEPTION);
+		REQUIRE(compilator.getErrorType() == ErrorType::SUB_INCORRECT_ARGUMENTS);
 
 		std::stringstream mySub7("sub([1 2])");
 		REQUIRE_THROWS(compilator.compileCode(mySub7));
-		REQUIRE(compilator.getErrorType() == ErrorType::ARGUMENT_EXEPTION);
+		REQUIRE(compilator.getErrorType() == ErrorType::SUB_MISSING_ARGUMENTS);
+
+		std::stringstream mySub8("sub(5, [1 2])");
+		REQUIRE_THROWS(compilator.compileCode(mySub8));
+		REQUIRE(compilator.getErrorType() == ErrorType::SUB_INCORRECT_ARGUMENTS);
 
 		REQUIRE(compilator.getContainerSize() == 0);
 	}
+	SECTION("Run built-in function in: concat")
+	{
+		std::stringstream myConcat1("concat([], [])");
+		compilator.compileCode(myConcat1);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == std::multiset<double>());
+
+		std::stringstream myConcat2("concat([1], [1])");
+		compilator.compileCode(myConcat2);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == std::multiset<double>{1, 1});
+
+		std::stringstream myConcat3("concat([1], [])");
+		compilator.compileCode(myConcat3);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == std::multiset<double>{1});
+
+		std::stringstream myConcat4("concat([1 2], [3 4])");
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == std::multiset<double>{1, 2, 3, 4});
+
+		std::stringstream myConcat6("concat(5, 6)");
+		REQUIRE_THROWS(compilator.compileCode(myConcat6));
+		REQUIRE(compilator.getErrorType() == ErrorType::CONCAT_INCORRECT_ARGUMENTS);
+
+		std::stringstream myConcat7("concat(7, [1])");
+		REQUIRE_THROWS(compilator.compileCode(myConcat7));
+		REQUIRE(compilator.getErrorType() == ErrorType::CONCAT_INCORRECT_ARGUMENTS);
+
+		std::stringstream myConcat8("concat(5)");
+		REQUIRE_THROWS(compilator.compileCode(myConcat8));
+		REQUIRE(compilator.getErrorType() == ErrorType::CONCAT_MISSING_ARGUMENTS);
+
+		std::stringstream myConcat9("concat([1 2 3 4)");
+		REQUIRE_THROWS(compilator.compileCode(myConcat9));
+		REQUIRE(compilator.getErrorType() == ErrorType::CONCAT_MISSING_ARGUMENTS);
+
+		REQUIRE(compilator.getContainerSize() == 0);
+	}		
 }
 
 TEST_CASE("Compile complex funcitons")
@@ -417,7 +464,7 @@ TEST_CASE("Built-In functions must not be modified")
 	{
 		std::stringstream throw1("sqrt()");
 		REQUIRE_THROWS(compilator.compileCode(throw1));
-		REQUIRE(compilator.getErrorType() == ErrorType::SQRT_ARGUMENT);
+		REQUIRE(compilator.getErrorType() == ErrorType::SQRT_MISSING_ARGUMENT);
 
 		std::stringstream throw2("eq()");
 		REQUIRE_THROWS(compilator.compileCode(throw2));

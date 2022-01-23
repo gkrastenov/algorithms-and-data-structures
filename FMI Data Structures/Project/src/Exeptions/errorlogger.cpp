@@ -21,7 +21,9 @@ std::unordered_map<ErrorType, std::string> ErrorLogger::errorMessages =
     { ErrorType::ARGUMENT_EXEPTION,    "ARGUMENT ERROR: Invalid arguments." },
 
     // Built-in functions
-    { ErrorType::SQRT_ARGUMENT,    "ARGUMENT ERROR: Missing arguments for built-in function: \"sqrt\"." },
+    { ErrorType::SQRT_MISSING_ARGUMENT,    "ARGUMENT ERROR: Missing arguments for built-in function: \"sqrt\"." },
+    { ErrorType::SQRT_INCORRECT_ARGUMENTS,    "ARGUMENT ERROR: Argument for built-in function \"sub\" have to be number." },
+
     { ErrorType::EQ_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Missing arguments for built-in function: \"eq\"." },
     { ErrorType::LE_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Missing arguments for built-in function: \"le\"." },
     { ErrorType::NAND_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Missing arguments for built-in function: \"nand\"." },
@@ -36,8 +38,17 @@ std::unordered_map<ErrorType, std::string> ErrorLogger::errorMessages =
 
     { ErrorType::LENGTH_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Missing arguments for built-in function: \"length\"." },
     { ErrorType::CONCAT_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Missing arguments for built-in function: \"concat\"." },
+    { ErrorType::CONCAT_INCORRECT_ARGUMENTS,    "ARGUMENT ERROR: Arguments for built-in function \"concat\" have to be list." },
+
+    { ErrorType::SUB_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Missing arguments for built-in function: \"sub\"." },
+    { ErrorType::SUB_INCORRECT_ARGUMENTS,    "ARGUMENT ERROR: Arguments for built-in function \"sub\" have to be numbers." },
+
+    { ErrorType::ADD_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Missing arguments for built-in function: \"add\"." },
+    { ErrorType::ADD_INCORRECT_ARGUMENTS,    "ARGUMENT ERROR: Arguments for built-in function \"add\" have to be numbers." },
+    
     { ErrorType::IF_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Missing arguments for built-in function: \"if\"." },
     { ErrorType::INT_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Missing arguments for built-in function: \"int\"." },
+    { ErrorType::MOD_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Missing arguments for built-in function: \"mod\"." },
     { ErrorType::WRITE_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Missing arguments for built-in function: \"write\"." },
     { ErrorType::MOD_WORK_ONLY_WITH_INTEGERS,    "ARGUMENT ERROR: Mod work only with integers." },
 

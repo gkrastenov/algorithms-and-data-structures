@@ -51,6 +51,7 @@ public:
     LList& replace_fromPos(const size_t pos, const LList& other);
     bool compare(const LList<T>& other);
     bool nand();
+    void concat(LList<T>& other);
 
     void print(std::multiset<T>& set) const;
 private:
@@ -343,6 +344,29 @@ template<class T>
 inline bool LList<T>::nand()
 {
     return sz != 0;
+}
+
+template<class T>
+inline void LList<T>::concat(LList<T>& other)
+{
+    if (other.size() == 0)
+        return;
+
+    if (sz == 0 && other.size() == 0)
+        return;
+
+    if (sz == 0 && other.size() == 1)
+    {
+        this->push_front(other.head);
+        return;
+    }
+
+    if (this->tail != nullptr)  
+        this->tail->next = other.head;  
+    else this->tail = other.head;
+          
+    this->tail = other.tail;
+    sz += other.size();
 }
 
 template<class T>
