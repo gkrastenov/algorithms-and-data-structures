@@ -79,9 +79,8 @@ void Compilator::compileCode(std::istream& stream)
 
 		if (containerContains(functionName))
 			isCreated = false;
-		else {
-			isCreated = true;
-		}
+	   else isCreated = true;
+
 		unsigned int countOfArguments = countArguments(functionCode);
 		container[functionName] = ContainerValue(countOfArguments, functionCode);
 	}
@@ -89,10 +88,20 @@ void Compilator::compileCode(std::istream& stream)
 		isCreated = false;
 		canBePrinted = true;
 
-		std::vector<string> countOfArguments = getArguments(code);
-		string compileCode = buildCompileCode(code, countOfArguments);
-		createTreeBody(compileCode);
-		compiledFunction = runTreeBody(tree)->getFunction();
+		if (isBasicFunction(code))
+		{
+			if(isValidBasicFunction(code) == false)
+				setErrorLogger(ErrorType::SYNTAX_INVALID);
+
+			createTreeBody(code);
+			compiledFunction = runTreeBody(tree)->getFunction();
+		}
+		else {
+			std::vector<string> countOfArguments = getArguments(code);
+			string compileCode = buildCompileCode(code, countOfArguments);
+			createTreeBody(compileCode);
+			compiledFunction = runTreeBody(tree)->getFunction();
+		}
 	}
 }
 
@@ -228,8 +237,8 @@ ASTNode* Compilator::runTreeBody(ASTNode* astNode)
 	{
 		auto curr = runTreeBody(astNode->getChildrenNodeByIndex(i));
 		auto childFunction = curr->getFunction();
-		if (astNode->getFunction().getType() == FunctionType::CONCAT) { // sqrt
-			if (astNode->getChindrenSize() != 1)
+		if (astNode->getFunction().getType() == FunctionType::CONCAT) { // concat
+			if (astNode->getChindrenSize() != 2)
 				setErrorLogger(ErrorType::CONCAT_MISSING_ARGUMENTS);
 			concat(astNode);
 		}
@@ -446,7 +455,9 @@ void Compilator::concat(ASTNode* root)
 		|| isTypeList(children[1]->getFunction().getType()) == false)
 		setErrorLogger(ErrorType::CONCAT_INCORRECT_ARGUMENTS);
 
-	// TODO::
+
+	children[0]->getFunction().getList();
+
 }
 
 std::vector<string> Compilator::getArguments(std::string& code) const
@@ -637,6 +648,17 @@ bool Compilator::isValidBasicFunction(const string& basicFuncCode) const
 		return false;
 
 	return true;
+}
+
+bool Compilator::isBasicFunction(const string& code) const
+{
+	string callOpen = "(";
+	string callClosed = ")";
+
+	size_t foundCallOpen = code.find(callOpen);
+	size_t foundCallClosed = code.find(callClosed);
+
+	return foundCallOpen == string::npos && foundCallClosed == string::npos;
 }
 
 std::multiset<double> Compilator::output() const

@@ -249,6 +249,7 @@ TEST_CASE("Run built-in function")
 
 		REQUIRE(compilator.getContainerSize() == 0);
 	}
+	/*
 	SECTION("Run built-in function in: concat")
 	{
 		std::stringstream myConcat1("concat([], [])");
@@ -287,7 +288,8 @@ TEST_CASE("Run built-in function")
 		REQUIRE(compilator.getErrorType() == ErrorType::CONCAT_MISSING_ARGUMENTS);
 
 		REQUIRE(compilator.getContainerSize() == 0);
-	}		
+	}	
+	*/
 }
 
 TEST_CASE("Compile complex funcitons")
@@ -459,66 +461,6 @@ TEST_CASE("Built-In functions must not be modified")
 		REQUIRE_THROWS(compilator.compileCode(throw16));
 		REQUIRE(compilator.getErrorType() == ErrorType::WRONG_USE_OPERATION_MODIFIED_BUILT_IN_FUNCTION);
 	}
-
-	SECTION("Built-In functions can not be run without argument/arguments")
-	{
-		std::stringstream throw1("sqrt()");
-		REQUIRE_THROWS(compilator.compileCode(throw1));
-		REQUIRE(compilator.getErrorType() == ErrorType::SQRT_MISSING_ARGUMENT);
-
-		std::stringstream throw2("eq()");
-		REQUIRE_THROWS(compilator.compileCode(throw2));
-		REQUIRE(compilator.getErrorType() == ErrorType::EQ_MISSING_ARGUMENTS);
-
-		std::stringstream throw3("le()");
-		REQUIRE_THROWS(compilator.compileCode(throw3));
-		REQUIRE(compilator.getErrorType() == ErrorType::LE_MISSING_ARGUMENTS);
-
-		std::stringstream throw4("nand()");
-		REQUIRE_THROWS(compilator.compileCode(throw4));
-		REQUIRE(compilator.getErrorType() == ErrorType::NAND_MISSING_ARGUMENTS);
-
-		std::stringstream throw5("length()");
-		REQUIRE_THROWS(compilator.compileCode(throw5));
-		REQUIRE(compilator.getErrorType() == ErrorType::LENGTH_MISSING_ARGUMENTS);
-
-		std::stringstream throw6("head()");
-		REQUIRE_THROWS(compilator.compileCode(throw6));
-		REQUIRE(compilator.getErrorType() == ErrorType::HEAD_NOT_MATCHING_CORRECT_ARGUMENT);
-
-		std::stringstream throw7("tail()");
-		REQUIRE_THROWS(compilator.compileCode(throw7));
-		REQUIRE(compilator.getErrorType() == ErrorType::TAIL_NOT_MATCHING_CORRECT_ARGUMENT);
-
-		std::stringstream throw8("list()");
-		REQUIRE_THROWS(compilator.compileCode(throw8));
-		REQUIRE(compilator.getErrorType() == ErrorType::LIST_MISSING_ARGUMENTS);
-
-		std::stringstream throw9("concat()");
-		REQUIRE_THROWS(compilator.compileCode(throw9));
-		REQUIRE(compilator.getErrorType() == ErrorType::CONCAT_MISSING_ARGUMENTS);
-
-		std::stringstream throw10("if()");
-		REQUIRE_THROWS(compilator.compileCode(throw10));
-		REQUIRE(compilator.getErrorType() == ErrorType::IF_MISSING_ARGUMENTS);
-
-		std::stringstream throw11("write()");
-		REQUIRE_THROWS(compilator.compileCode(throw11));
-		REQUIRE(compilator.getErrorType() == ErrorType::WRITE_MISSING_ARGUMENTS);
-
-		std::stringstream throw12("int()");
-		REQUIRE_THROWS(compilator.compileCode(throw2));
-		REQUIRE(compilator.getErrorType() == ErrorType::INT_MISSING_ARGUMENTS);
-
-		std::stringstream throw13("eq(5 eq())");
-		REQUIRE_THROWS(compilator.compileCode(throw13));
-		REQUIRE(compilator.getErrorType() == ErrorType::EQ_MISSING_ARGUMENTS);
-	}
-	/*
-	SECTION("Bult-In function \"read\" can be run without argument/arguments")
-	{
-		compilator.compile_code("read()");
-	}*/
 }
 /*
 TEST_CASE("Run built-in function")
@@ -528,67 +470,118 @@ TEST_CASE("Run built-in function")
 
 }
 */
-/*
+
 TEST_CASE("Create and save function")
 {
 	Compilator compilator;
 	SECTION("Create basic function and save it")
 	{
-		REQUIRE(compilator.compile_code("myList1 -> [3 4 5 7 9 10]") == "0");
+		std::multiset<double> isCreated{ 0 };
+		std::multiset<double> isEdited{ 1 };
+
+		std::stringstream list1Created("myList1 -> [3 4 5 7 9 10]");
+		compilator.compileCode(list1Created);
+		REQUIRE(compilator.output() == isCreated);
 		REQUIRE(compilator.getContainerSize() == 1);
-		REQUIRE(compilator.compile_code("myList1 -> [3 4 5 7 9]") == "1");
+
+		std::stringstream list1Edited("myList1 -> [3 4 5 7 9]");
+		compilator.compileCode(list1Edited);
+		REQUIRE(compilator.output() == isEdited);
 		REQUIRE(compilator.getContainerSize() == 1);
-		REQUIRE(compilator.compile_code("myList2 -> [1]") == "0");
+
+		std::stringstream list2("myList2 -> [1]");
+		compilator.compileCode(list2);
+		REQUIRE(compilator.output() == isCreated);
 		REQUIRE(compilator.getContainerSize() == 2);
 
-		REQUIRE(compilator.compile_code("myNumber1 -> 5") == "0");
-		REQUIRE(compilator.compile_code("myNumber2 -> 5 ") == "0");
-		REQUIRE(compilator.compile_code("myNumber3 -> 50") == "0");
-		REQUIRE(compilator.compile_code("myNumber4 -> 6.5") == "0");
-		REQUIRE(compilator.getContainerSize() == 6);
-		REQUIRE(compilator.compile_code("myNumber1 -> -5") == "1");
-		REQUIRE(compilator.getContainerSize() == 6);
-		REQUIRE(compilator.compile_code("myNumber1 -> 50") == "1");
+		std::stringstream number1("myNumber1 -> 5");
+		compilator.compileCode(number1);
+		REQUIRE(compilator.output() == isCreated);
 
-		REQUIRE(compilator.compile_code("myNumber3 -> 6") == "1");
-		REQUIRE(compilator.compile_code("myNumber4 -> 7") == "1");
+		std::stringstream number2("myNumber2 -> 5");
+		compilator.compileCode(number2);
+		REQUIRE(compilator.output() == isCreated);
+
+		std::stringstream number3("myNumber3 -> 50");
+		compilator.compileCode(number3);
+		REQUIRE(compilator.output() == isCreated);
+
+		std::stringstream number4("myNumber4 -> 6.5");
+		compilator.compileCode(number4);
+		REQUIRE(compilator.output() == isCreated);
+		REQUIRE(compilator.getContainerSize() == 6);
+
+		std::stringstream number1Edited("myNumber1 -> -5");
+		compilator.compileCode(number1Edited);
+		REQUIRE(compilator.output() == isEdited);
+		REQUIRE(compilator.getContainerSize() == 6);
+
+		std::stringstream number3Edited("myNumber3 -> 6");
+		compilator.compileCode(number3Edited);
+		REQUIRE(compilator.output() == isEdited);
+		REQUIRE(compilator.getContainerSize() == 6);
+
+		std::stringstream number4Edited("myNumber4 -> 7");
+		compilator.compileCode(number4Edited);
+		REQUIRE(compilator.output() == isEdited);
+		REQUIRE(compilator.getContainerSize() == 6);
 		REQUIRE(compilator.getContainerSize() == 6);
 	}
-
-	SECTION("Validation syntax for basic function")
-	{
-		// Invalid syntax
-		REQUIRE(!compilator.valid_syntax_basic_funciton("asd"));
-		REQUIRE(!compilator.valid_syntax_basic_funciton("[a 1 2 3 4]"));
-		REQUIRE(!compilator.valid_syntax_basic_funciton("[a --1 2 3 4]"));
-		REQUIRE(!compilator.valid_syntax_basic_funciton("-[a 1 2 3 4]"));
-		REQUIRE(!compilator.valid_syntax_basic_funciton("-[a 1 2 3 4-]"));
-		REQUIRE(!compilator.valid_syntax_basic_funciton("-[a 1 2 3 -4-]"));
-		REQUIRE(!compilator.valid_syntax_basic_funciton("-[a 1 2 3 4]-"));
-		REQUIRE(!compilator.valid_syntax_basic_funciton("[[1 2 3 4 5]]"));
-		REQUIRE(!compilator.valid_syntax_basic_funciton("[1 2 3] 5"));
-		REQUIRE(!compilator.valid_syntax_basic_funciton("[a]"));
-		REQUIRE(!compilator.valid_syntax_basic_funciton("[a b]"));
-
-		// Valid syntax
-		REQUIRE(compilator.valid_syntax_basic_funciton("56"));
-		REQUIRE(compilator.valid_syntax_basic_funciton("[1 2 3 4]"));
-		REQUIRE(compilator.valid_syntax_basic_funciton("[]"));
-		REQUIRE(compilator.valid_syntax_basic_funciton("[1]"));
-	}
-
+	
 	SECTION("Create and do not save basic function")
 	{
-		REQUIRE(compilator.compile_code("56") == "56");
-		REQUIRE(compilator.compile_code("[1 2 3 4]") == "[1 2 3 4]");
-		REQUIRE(compilator.getContainerSize() == 0);
-		REQUIRE(compilator.compile_code("[]") == "[]");
-		REQUIRE_THROWS(compilator.compile_code("[a]"));
+		// Invalid syntax
+		std::stringstream invalidCode1("asd");
+		REQUIRE_THROWS(compilator.compileCode(invalidCode1));
 		REQUIRE(compilator.getErrorType() == ErrorType::SYNTAX_INVALID);
 
-		REQUIRE_THROWS(compilator.compile_code("[a --1 2 3 4]"));
+		std::stringstream invalidCode2("[a 1 2 3 4]");
+		REQUIRE_THROWS(compilator.compileCode(invalidCode2));
 		REQUIRE(compilator.getErrorType() == ErrorType::SYNTAX_INVALID);
+
+		std::stringstream invalidCode3("[a --1 2 3 4]");
+		REQUIRE_THROWS(compilator.compileCode(invalidCode3));
+		REQUIRE(compilator.getErrorType() == ErrorType::SYNTAX_INVALID);
+
+		std::stringstream invalidCode4("-[a 1 2 3 4]");
+		REQUIRE_THROWS(compilator.compileCode(invalidCode4));
+		REQUIRE(compilator.getErrorType() == ErrorType::SYNTAX_INVALID);
+
+		std::stringstream invalidCode5("[a 1 2 3 4-]");
+		REQUIRE_THROWS(compilator.compileCode(invalidCode5));
+		REQUIRE(compilator.getErrorType() == ErrorType::SYNTAX_INVALID);
+
+		std::stringstream invalidCode6("[[1 2 3 4 5]]");
+		REQUIRE_THROWS(compilator.compileCode(invalidCode6));
+		REQUIRE(compilator.getErrorType() == ErrorType::SYNTAX_INVALID);
+
+		std::stringstream invalidCode7("[1 2 3] 5");
+		REQUIRE_THROWS(compilator.compileCode(invalidCode7));
+		REQUIRE(compilator.getErrorType() == ErrorType::SYNTAX_INVALID);
+
+		std::stringstream invalidCode8("[a]");
+		REQUIRE_THROWS(compilator.compileCode(invalidCode8));
+		REQUIRE(compilator.getErrorType() == ErrorType::SYNTAX_INVALID);
+
+		std::stringstream invalidCode9("[5 b]");
+		REQUIRE_THROWS(compilator.compileCode(invalidCode9));
+		REQUIRE(compilator.getErrorType() == ErrorType::SYNTAX_INVALID);
+
+		std::stringstream validCode1("56");
+		compilator.compileCode(validCode1);
+		REQUIRE(compilator.output() == std::multiset<double>{56});
+
+		std::stringstream validCode2("[1 2 3 4]");
+		compilator.compileCode(validCode2);
+		REQUIRE(compilator.output() == std::multiset<double>{1,2,3,4});
+
+		std::stringstream validCode3("[]");
+		compilator.compileCode(validCode3);
+		REQUIRE(compilator.output() == std::multiset<double>{});
+
+		std::stringstream validCode4("[1]");
+		compilator.compileCode(validCode4);
+		REQUIRE(compilator.output() == std::multiset<double>{1});
 		REQUIRE(compilator.getContainerSize() == 0);
 	}
 }
-*/

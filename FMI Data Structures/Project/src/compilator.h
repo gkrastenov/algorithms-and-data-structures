@@ -54,7 +54,6 @@ public:
 
 	std::multiset<double> output() const;
 
-	bool isValidBasicFunction(const string& basicFuncCode) const;
 private:
 	void setErrorLogger(const ErrorType errorType);
 	void createNumberNode(std::stack< ASTNode*>& stack, const string& code);
@@ -90,4 +89,6 @@ private:
 	unsigned int countArguments(std::string& code) const;
 
 	bool isTypeList(const FunctionType type) const;
+	bool isValidBasicFunction(const string& code) const;
+	bool isBasicFunction(const string& code) const;
 };

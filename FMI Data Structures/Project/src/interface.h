@@ -46,6 +46,7 @@ public:
 	{};
 	Function(const string& data) {};
 	Function(const Function& other) { copy(other); }
+	~Function() {};
 	// Function(Function&& fnc) noexcept {}; TODO: which constructor to use for creating astNODE move or copy
 
 	const FunctionType getType() const { return type; }
