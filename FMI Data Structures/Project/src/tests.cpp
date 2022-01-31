@@ -79,8 +79,79 @@ TEST_CASE("Run built-in function")
 		compilator.compileCode(myEq9);
 		REQUIRE(!compilator.getIsCreated());
 		REQUIRE(compilator.output() == isTrue);
-	}
 
+		REQUIRE(compilator.getContainerSize() == 0);
+	}
+	SECTION("Run built-in function le")
+	{
+		std::multiset<double> isTrue{ 1 };
+		std::multiset<double> isFalse{ 0 };
+
+		std::stringstream myErrLe1("le(5)");
+		REQUIRE_THROWS(compilator.compileCode(myErrLe1));
+		REQUIRE(compilator.getErrorType() == ErrorType::LE_MISSING_ARGUMENTS);
+
+		std::stringstream myErrLe2("le([5])");
+		REQUIRE_THROWS(compilator.compileCode(myErrLe2));
+		REQUIRE(compilator.getErrorType() == ErrorType::LE_MISSING_ARGUMENTS);
+
+		std::stringstream myLe1("le(5, 5)");
+		compilator.compileCode(myLe1);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == isFalse);
+
+		std::stringstream myLe2("le(5, 5.1)");
+		compilator.compileCode(myLe2);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == isTrue);
+
+		std::stringstream myLe3("le(5.1, 5)");
+		compilator.compileCode(myLe3);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == isFalse);
+
+		std::stringstream myLe4("le(-10, 0)");
+		compilator.compileCode(myLe4);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == isTrue);
+
+		std::stringstream myLe5("le([1 2], [1 2])");
+		compilator.compileCode(myLe5);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == isFalse);
+
+		std::stringstream myLe6("le([0 1], [1 2])");
+		compilator.compileCode(myLe6);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == isTrue);
+
+		std::stringstream myLe7("le([], [])");
+		compilator.compileCode(myLe7);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == isFalse);
+
+		std::stringstream myLe8("le(2, [2 1])");
+		compilator.compileCode(myLe8);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == isFalse);
+
+		std::stringstream myLe9("le(2, [2])");
+		compilator.compileCode(myLe9);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == isFalse);
+
+		std::stringstream myLe10("le(2, [3])");
+		compilator.compileCode(myLe10);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == isTrue);
+
+		std::stringstream myLe11("le([1 5], [1 2])");
+		compilator.compileCode(myLe11);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == isFalse);
+
+		REQUIRE(compilator.getContainerSize() == 0);
+	}
 	SECTION("Run built-in function mod")
 	{
 		std::stringstream myMod1("mod(5 2)");
@@ -276,7 +347,6 @@ TEST_CASE("Run built-in function")
 		REQUIRE(!compilator.getIsCreated());
 		REQUIRE(compilator.output() == std::multiset<double>{0});
 
-
 		std::stringstream myDiv3("div(-40 2)");
 		compilator.compileCode(myDiv3);
 		REQUIRE(!compilator.getIsCreated());
@@ -362,7 +432,6 @@ TEST_CASE("Compile complex funcitons")
 		REQUIRE(compilator.getIsCreated());
 		REQUIRE(compilator.getContainerSize() == 1);
 		REQUIRE(compilator.output() == isCreated);
-
 
 		std::stringstream tailMyEvenList("tail(myEvenList())");
 		compilator.compileCode(tailMyEvenList);

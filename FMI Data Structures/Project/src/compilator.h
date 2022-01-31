@@ -76,6 +76,7 @@ private:
 	void mod(ASTNode* root);
 	void div(ASTNode* root);
 	void eq(ASTNode* root);
+	void le(ASTNode* root);
 	void nand(ASTNode* root);
 	void add(ASTNode* root);
 	void sqrt(ASTNode* root, Function& numberFunction);

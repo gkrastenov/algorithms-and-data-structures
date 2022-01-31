@@ -265,11 +265,18 @@ ASTNode* Compilator::runTreeBody(ASTNode* astNode)
 			if (i == 1) 
 				nand(astNode);
 
-		}else if (astNode->getFunction().getType() == FunctionType::EQ) { // eq
+		}
+		else if (astNode->getFunction().getType() == FunctionType::EQ) { // eq
 			if (astNode->getChindrenSize() != 2)
 				setErrorLogger(ErrorType::EQ_MISSING_ARGUMENTS);
-			if (i == 1) 
+			if (i == 1)
 				eq(astNode);
+
+		} else if (astNode->getFunction().getType() == FunctionType::LE) { // le
+				if (astNode->getChindrenSize() != 2)
+					setErrorLogger(ErrorType::LE_MISSING_ARGUMENTS);
+				if (i == 1)
+					le(astNode);
 
 		}else if (astNode->getFunction().getType() == FunctionType::MOD) { // mod
 			if (astNode->getChindrenSize() != 2)
@@ -388,7 +395,14 @@ void Compilator::div(ASTNode* root)
 void Compilator::eq(ASTNode* root)
 {
 	auto children = root->getChildrenNodes(); // vector
-	int result = children[0]->getFunction().getList().compare(children[1]->getFunction().getList());
+	int result = children[0]->getFunction().getList().eqCompare(children[1]->getFunction().getList());
+	root->getFunction().replaceList(result);
+}
+
+void Compilator::le(ASTNode* root)
+{
+	auto children = root->getChildrenNodes(); // vector
+	int result = children[0]->getFunction().getList().leCompare(children[1]->getFunction().getList());
 	root->getFunction().replaceList(result);
 }
 

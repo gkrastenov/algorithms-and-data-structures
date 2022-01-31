@@ -49,7 +49,8 @@ public:
     T pop_atPos(size_t pos);
 
     LList& replace_fromPos(const size_t pos, const LList& other);
-    bool compare(const LList<T>& other);
+    bool eqCompare(const LList<T>& other);
+    bool leCompare(const LList<T>& other);
     bool nand();
     void concat(LList<T>& other);
 
@@ -320,7 +321,7 @@ inline LList<T>& LList<T>::replace_fromPos(const size_t pos, const LList& other)
 }
 
 template<class T>
-inline bool LList<T>::compare(const LList<T>& other)
+inline bool LList<T>::eqCompare(const LList<T>& other)
 {
     if (sz != other.size())
         return false;
@@ -337,6 +338,30 @@ inline bool LList<T>::compare(const LList<T>& other)
         firstTemp = firstTemp->next;
         secondTemp = secondTemp->next;
    }
+    return true;
+}
+
+template<class T>
+inline bool LList<T>::leCompare(const LList<T>& other)
+{
+    if (sz == 0 && other.size() == 0)
+        return false;
+
+    if (sz != other.size())
+        return false;
+
+    if (sz == 1 && other.size() == 1)
+        return this->front() < other.front();
+
+    Node* firstTemp = this->head;
+    Node* secondTemp = other.head;
+    while (firstTemp != nullptr && secondTemp != nullptr)
+    {
+        if (firstTemp->data >= secondTemp->data)
+            return false;
+        firstTemp = firstTemp->next;
+        secondTemp = secondTemp->next;
+    }
     return true;
 }
 
