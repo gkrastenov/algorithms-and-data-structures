@@ -74,6 +74,7 @@ private:
 	void tail(ASTNode* root, Function& listFunciton);
 	void integer(ASTNode* root, Function& numberFunction);
 	void mod(ASTNode* root);
+	void div(ASTNode* root);
 	void eq(ASTNode* root);
 	void nand(ASTNode* root);
 	void add(ASTNode* root);

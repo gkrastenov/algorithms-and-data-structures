@@ -26,6 +26,7 @@ enum class FunctionType
 	IF,
 	WRITE,
 	MOD,
+	DIV,
 	NAND,
 	SUB,
 	UNKNOWN,

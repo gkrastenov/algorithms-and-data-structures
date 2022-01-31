@@ -24,6 +24,10 @@ std::unordered_map<ErrorType, std::string> ErrorLogger::errorMessages =
     { ErrorType::SQRT_MISSING_ARGUMENT,    "ARGUMENT ERROR: Missing arguments for built-in function: \"sqrt\"." },
     { ErrorType::SQRT_INCORRECT_ARGUMENTS,    "ARGUMENT ERROR: Argument for built-in function \"sub\" have to be number." },
 
+    { ErrorType::DIV_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Missing arguments for built-in function: \"div\"." },
+    { ErrorType::DIV_INCORRECT_ARGUMENTS,    "ARGUMENT ERROR: Argument for built-in function \"div\" have to be number." },
+    { ErrorType::DIVIDE_BY_ZERO,                "ERROR: Trying to divide by zero." },
+
     { ErrorType::EQ_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Missing arguments for built-in function: \"eq\"." },
     { ErrorType::LE_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Missing arguments for built-in function: \"le\"." },
     { ErrorType::NAND_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Missing arguments for built-in function: \"nand\"." },
@@ -48,7 +52,10 @@ std::unordered_map<ErrorType, std::string> ErrorLogger::errorMessages =
     
     { ErrorType::IF_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Missing arguments for built-in function: \"if\"." },
     { ErrorType::INT_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Missing arguments for built-in function: \"int\"." },
+
     { ErrorType::MOD_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Missing arguments for built-in function: \"mod\"." },
+    { ErrorType::MOD_INCORRECT_ARGUMENTS,    "ARGUMENT ERROR: Argument for built-in function \"mod\" have to be number." },
+
     { ErrorType::WRITE_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Missing arguments for built-in function: \"write\"." },
     { ErrorType::MOD_WORK_ONLY_WITH_INTEGERS,    "ARGUMENT ERROR: Mod work only with integers." },
 
@@ -112,7 +119,6 @@ std::unordered_map<ErrorType, std::string> ErrorLogger::errorMessages =
     { ErrorType::EXPECTED_DECL,                 "ERROR: Expected a declaration" },
     { ErrorType::MISSING_SEMI_COLON,            "ERROR: Expected a ;" },
     { ErrorType::UNCLOSED_ML_COMMENT,           "ERROR: Unclosed multiline comment" },
-    { ErrorType::DIVIDE_BY_ZERO,                "ERROR: Trying to divide by zero." },
 
     // Param
     { ErrorType::PARAM_MISSING_COLON,           "PARAM ERROR: Missing colon between a parameter and its type" },

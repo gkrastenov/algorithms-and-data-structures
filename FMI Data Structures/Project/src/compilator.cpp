@@ -277,7 +277,14 @@ ASTNode* Compilator::runTreeBody(ASTNode* astNode)
 			if (i == 1) 
 				mod(astNode);
 
-		} else if (astNode->getFunction().getType() == FunctionType::INT) { // int
+		}
+		else if (astNode->getFunction().getType() == FunctionType::DIV) { // div
+			if (astNode->getChindrenSize() != 2)
+				setErrorLogger(ErrorType::DIV_MISSING_ARGUMENTS);
+			if (i == 1)
+				div(astNode);
+
+		}else if (astNode->getFunction().getType() == FunctionType::INT) { // int
 			if (astNode->getChindrenSize() != 1)
 				setErrorLogger(ErrorType::INT_MISSING_ARGUMENTS);
 			integer(astNode, childFunction);
@@ -347,9 +354,9 @@ void Compilator::mod(ASTNode* root)
 {
 	auto children = root->getChildrenNodes(); // vector
 
-	if(children[0]->getFunction().getList().size() != 1 
-	|| children[1]->getFunction().getList().size() != 1)
-		setErrorLogger(ErrorType::ARGUMENT_EXEPTION);
+	if (isTypeList(children[0]->getFunction().getType())
+	 || isTypeList(children[1]->getFunction().getType()))
+		setErrorLogger(ErrorType::MOD_INCORRECT_ARGUMENTS);
 
 	int divindend = children[0]->getFunction().getList().front();
 	int divisor = children[1]->getFunction().getList().front();
@@ -359,6 +366,23 @@ void Compilator::mod(ASTNode* root)
 		setErrorLogger(ErrorType::MOD_WORK_ONLY_WITH_INTEGERS);
 
 	root->getFunction().replaceList(divindend % divisor);		
+}
+
+void Compilator::div(ASTNode* root)
+{
+	auto children = root->getChildrenNodes(); // vector
+
+	if (isTypeList(children[0]->getFunction().getType())
+	 || isTypeList(children[1]->getFunction().getType()))
+			setErrorLogger(ErrorType::DIV_INCORRECT_ARGUMENTS);
+
+	double divindend = children[0]->getFunction().getList().front();
+	double divisor = children[1]->getFunction().getList().front();
+
+	if(divisor == 0)
+		setErrorLogger(ErrorType::DIVIDE_BY_ZERO);
+
+	root->getFunction().replaceList(divindend / divisor);
 }
 
 void Compilator::eq(ASTNode* root)
@@ -552,6 +576,8 @@ FunctionType Compilator::getFunctionType(const string& funcName) const
 		return FunctionType::INT;
 	if (funcName == "sub")
 		return FunctionType::SUB;
+	if (funcName == "div")
+		return FunctionType::DIV;
 	return FunctionType::UNKNOWN;
 }
 

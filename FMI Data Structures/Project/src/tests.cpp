@@ -6,7 +6,7 @@
 TEST_CASE("Run built-in function")
 {
 	Compilator compilator;
-	SECTION("Run built-in function in: int")
+	SECTION("Run built-in function int")
 	{
 		std::stringstream myInt("int(5.2)");
     	compilator.compileCode(myInt);
@@ -22,7 +22,7 @@ TEST_CASE("Run built-in function")
 		REQUIRE(compilator.getErrorType() == ErrorType::INT_MISSING_ARGUMENTS);
 	}
 
-	SECTION("Run built-in function in: eq")
+	SECTION("Run built-in function eq")
 	{
 		std::multiset<double> isTrue{1};
 		std::multiset<double> isFalse{0};
@@ -81,12 +81,17 @@ TEST_CASE("Run built-in function")
 		REQUIRE(compilator.output() == isTrue);
 	}
 
-	SECTION("Run built-in function in: mod")
+	SECTION("Run built-in function mod")
 	{
-		std::stringstream myMod("mod(5 2)");
-		compilator.compileCode(myMod);
+		std::stringstream myMod1("mod(5 2)");
+		compilator.compileCode(myMod1);
 		REQUIRE(!compilator.getIsCreated());
 		REQUIRE(compilator.output() == std::multiset<double>{1});
+
+		std::stringstream myMod2("mod(-60 2)");
+		compilator.compileCode(myMod2);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == std::multiset<double>{0});
 
 		std::stringstream myErrorMod1("mod(5)");
 		REQUIRE_THROWS(compilator.compileCode(myErrorMod1));
@@ -107,8 +112,18 @@ TEST_CASE("Run built-in function")
 		std::stringstream myErrorMod5("mod(5.1 1.1)");
 		REQUIRE_THROWS(compilator.compileCode(myErrorMod5));
 		REQUIRE(compilator.getErrorType() == ErrorType::MOD_WORK_ONLY_WITH_INTEGERS);
+
+		std::stringstream myErrorMod7("mod(2 [5 4 6 2])");
+		REQUIRE_THROWS(compilator.compileCode(myErrorMod7));
+		REQUIRE(compilator.getErrorType() == ErrorType::MOD_INCORRECT_ARGUMENTS);
+
+		std::stringstream myErrorMod8("mod([3] [5 4 6 2])");
+		REQUIRE_THROWS(compilator.compileCode(myErrorMod8));
+		REQUIRE(compilator.getErrorType() == ErrorType::MOD_INCORRECT_ARGUMENTS);
+
+		REQUIRE(compilator.getContainerSize() == 0);
 	}
-	SECTION("Run built-in function in: nand") 
+	SECTION("Run built-in function nand") 
 	{
 		std::multiset<double> isTrue  {1};
 		std::multiset<double> isFalse {0};
@@ -153,7 +168,7 @@ TEST_CASE("Run built-in function")
 
 		REQUIRE(compilator.getContainerSize() == 0);
 	}
-	SECTION("Run built-in function in: sqrt")
+	SECTION("Run built-in function sqrt")
 	{
 		std::stringstream mySqrt1("sqrt(25)");
 		compilator.compileCode(mySqrt1);
@@ -179,7 +194,7 @@ TEST_CASE("Run built-in function")
 
 		REQUIRE(compilator.getContainerSize() == 0);
 	}
-	SECTION("Run built-in function in: add")
+	SECTION("Run built-in function add")
 	{
 		std::stringstream myAdd1("add(25, 25)");
 		compilator.compileCode(myAdd1);
@@ -214,7 +229,7 @@ TEST_CASE("Run built-in function")
 
 		REQUIRE(compilator.getContainerSize() == 0);
 	}
-	SECTION("Run built-in function in: sub")
+	SECTION("Run built-in function sub")
 	{
 		std::stringstream mySub1("sub(25, 25)");
 		compilator.compileCode(mySub1);
@@ -246,6 +261,50 @@ TEST_CASE("Run built-in function")
 		std::stringstream mySub8("sub(5, [1 2])");
 		REQUIRE_THROWS(compilator.compileCode(mySub8));
 		REQUIRE(compilator.getErrorType() == ErrorType::SUB_INCORRECT_ARGUMENTS);
+
+		REQUIRE(compilator.getContainerSize() == 0);
+	}
+	SECTION("Run built-in function div")
+	{
+		std::stringstream myDiv1("div(5 2)");
+		compilator.compileCode(myDiv1);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == std::multiset<double>{2.5});
+
+		std::stringstream myDiv2("div(0 2)");
+		compilator.compileCode(myDiv2);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == std::multiset<double>{0});
+
+
+		std::stringstream myDiv3("div(-40 2)");
+		compilator.compileCode(myDiv3);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == std::multiset<double>{-20});
+
+		std::stringstream myDivError1("div(5)");
+		REQUIRE_THROWS(compilator.compileCode(myDivError1));
+		REQUIRE(compilator.getErrorType() == ErrorType::DIV_MISSING_ARGUMENTS);
+
+		std::stringstream myDivError2("div([5 4 6 2])");
+		REQUIRE_THROWS(compilator.compileCode(myDivError2));
+		REQUIRE(compilator.getErrorType() == ErrorType::DIV_MISSING_ARGUMENTS);
+
+		std::stringstream myDivError3("div([2] 1)");
+		REQUIRE_THROWS(compilator.compileCode(myDivError3));
+		REQUIRE(compilator.getErrorType() == ErrorType::DIV_INCORRECT_ARGUMENTS);
+
+		std::stringstream myDivError4("div(3 [1])");
+		REQUIRE_THROWS(compilator.compileCode(myDivError4));
+		REQUIRE(compilator.getErrorType() == ErrorType::DIV_INCORRECT_ARGUMENTS);
+
+		std::stringstream myDivError5("div([3] [1])");
+		REQUIRE_THROWS(compilator.compileCode(myDivError5));
+		REQUIRE(compilator.getErrorType() == ErrorType::DIV_INCORRECT_ARGUMENTS);
+
+		std::stringstream myDivError6("div(5 0)");
+		REQUIRE_THROWS(compilator.compileCode(myDivError6));
+		REQUIRE(compilator.getErrorType() == ErrorType::DIVIDE_BY_ZERO);
 
 		REQUIRE(compilator.getContainerSize() == 0);
 	}
