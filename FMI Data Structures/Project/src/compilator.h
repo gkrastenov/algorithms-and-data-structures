@@ -70,9 +70,9 @@ private:
 
 
 	// Built-in function
-	void head(ASTNode* root, Function& listFunciton);
+	void head(ASTNode* root);
 	void tail(ASTNode* root);
-	void integer(ASTNode* root, Function& numberFunction);
+	void integer(ASTNode* root);
 	void mod(ASTNode* root);
 	void div(ASTNode* root);
 	void eq(ASTNode* root);

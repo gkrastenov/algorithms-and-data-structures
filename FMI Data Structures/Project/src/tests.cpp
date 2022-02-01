@@ -36,6 +36,8 @@ TEST_CASE("Funcions who contains if clause")
 	std::stringstream myIferror3("if(eq(5, 5))");
 	REQUIRE_THROWS(compilator.compileCode(myIferror3));
 	REQUIRE(compilator.getErrorType() == ErrorType::IF_MISSING_ARGUMENTS);
+
+	REQUIRE(compilator.getContainerSize() == 0);
 }
 
 TEST_CASE("Run built-in function")
@@ -99,7 +101,7 @@ TEST_CASE("Run built-in function")
 		REQUIRE_THROWS(compilator.compileCode(error4));
 		REQUIRE(compilator.getErrorType() == ErrorType::LIST_INCORRECT_ARGUMENTS);
 	}
-	SECTION("Run built-in function list")
+	SECTION("Run built-in function tail")
 	{
 		std::stringstream tail1("tail([1 2 3])");
 		compilator.compileCode(tail1);
@@ -139,20 +141,57 @@ TEST_CASE("Run built-in function")
 
 		REQUIRE(compilator.getContainerSize() == 0);
 	}
+	SECTION("Run built-in function head")
+	{
+		std::stringstream head1("head([1 2 3])");
+		compilator.compileCode(head1);
+		REQUIRE(compilator.output() == std::multiset<double>{1});
+
+		std::stringstream head2("head([3])");
+		compilator.compileCode(head2);
+		REQUIRE(compilator.output() == std::multiset<double>{3});
+
+		std::stringstream headError1("head(5)");
+		REQUIRE_THROWS(compilator.compileCode(headError1));
+		REQUIRE(compilator.getErrorType() == ErrorType::HEAD_NOT_MATCHING_CORRECT_ARGUMENT);
+
+		std::stringstream headError2("head(5, 5)");
+		REQUIRE_THROWS(compilator.compileCode(headError2));
+		REQUIRE(compilator.getErrorType() == ErrorType::HEAD_MISSING_ARGUMENTS);
+
+		std::stringstream headError3("head([5], [5])");
+		REQUIRE_THROWS(compilator.compileCode(headError3));
+		REQUIRE(compilator.getErrorType() == ErrorType::HEAD_MISSING_ARGUMENTS);
+
+		std::stringstream headError4("head([]");
+		REQUIRE_THROWS(compilator.compileCode(headError4));
+		REQUIRE(compilator.getErrorType() == ErrorType::HEAD_EMPTY_LIST_ARGUMENT);
+
+		std::stringstream head3("head(list(1))");
+		compilator.compileCode(head3);
+		REQUIRE(compilator.output() == std::multiset<double>{1});
+
+		REQUIRE(compilator.getContainerSize() == 0);
+	}
 	SECTION("Run built-in function int")
 	{
-		std::stringstream myInt("int(5.2)");
-    	compilator.compileCode(myInt);
+		std::stringstream int1("int(5.2)");
+    	compilator.compileCode(int1);
 		REQUIRE(!compilator.getIsCreated());
 		REQUIRE(compilator.output() == std::multiset<double>{5});
 
-		std::stringstream myErrorInt("int(5.2, 5)");
-		REQUIRE_THROWS(compilator.compileCode(myErrorInt));
+		std::stringstream intError1("int(5.2, 5)");
+		REQUIRE_THROWS(compilator.compileCode(intError1));
 		REQUIRE(compilator.getErrorType() == ErrorType::INT_MISSING_ARGUMENTS);
 
-		std::stringstream myErrorListInt("int([5 2 5])");
-		REQUIRE_THROWS(compilator.compileCode(myErrorListInt));
-		REQUIRE(compilator.getErrorType() == ErrorType::INT_MISSING_ARGUMENTS);
+		std::stringstream intError2("int([5 2 5])");
+		REQUIRE_THROWS(compilator.compileCode(intError2));
+		REQUIRE(compilator.getErrorType() == ErrorType::INT_INCORRECT_ARGUMENTS);
+
+		std::stringstream intError3("int([5])");
+		REQUIRE_THROWS(compilator.compileCode(intError3));
+		REQUIRE(compilator.getErrorType() == ErrorType::INT_INCORRECT_ARGUMENTS);
+
 	}
 	SECTION("Run built-in function eq")
 	{
@@ -649,6 +688,19 @@ TEST_CASE("Compile complex funcitons")
 		REQUIRE(!compilator.getIsCreated());
 		REQUIRE(compilator.getContainerSize() == 5);
 		REQUIRE(compilator.output() == std::multiset<double> {1});
+
+
+		std::stringstream divsors("divisors->concat([2], list(3, 2, add(1, int(sqrt(#0))))");
+		compilator.compileCode(divsors);
+		REQUIRE(compilator.getIsCreated());
+		REQUIRE(compilator.getContainerSize() == 6);
+		REQUIRE(compilator.output() == std::multiset<double> {0});
+
+		std::stringstream divsorsCall("divisors(4)");
+		compilator.compileCode(divsorsCall);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.getContainerSize() == 6);
+		REQUIRE(compilator.output() == std::multiset<double> {2,3,5,7});
 	}
 }
 

@@ -241,9 +241,7 @@ int Compilator::createTreeBody(const string& funCode)
 ASTNode* Compilator::runTreeBody(ASTNode* astNode)
 {
 	if (astNode == nullptr)
-	{
 		return nullptr;
-	}
 
 	if (astNode->getFunction().getType() == FunctionType::IF) // if
 	{
@@ -268,8 +266,8 @@ ASTNode* Compilator::runTreeBody(ASTNode* astNode)
 			else astNode->getFunction().replaceList(ifFalse->getFunction().getList().front());
 			return astNode;
 		}
-
-	}else if (astNode->getFunction().getType() == FunctionType::NAND)
+	}
+	if (astNode->getFunction().getType() == FunctionType::NAND) // nand
 	{
 		if (astNode->getChindrenSize() != 2)
 			setErrorLogger(ErrorType::NAND_MISSING_ARGUMENTS);
@@ -382,7 +380,7 @@ ASTNode* Compilator::runTreeBody(ASTNode* astNode)
 		}else if (astNode->getFunction().getType() == FunctionType::INT) { // int
 			if (astNode->getChindrenSize() != 1)
 				setErrorLogger(ErrorType::INT_MISSING_ARGUMENTS);
-			integer(astNode, childFunction);
+			integer(astNode);
 
 		} else if (astNode->getFunction().getType() == FunctionType::TAIL) { // tail
 			if (astNode->getChindrenSize() != 1)
@@ -391,9 +389,8 @@ ASTNode* Compilator::runTreeBody(ASTNode* astNode)
 
 		} else if (astNode->getFunction().getType() == FunctionType::HEAD) {// head
 			if (astNode->getChindrenSize() != 1)
-				errorLogger.setErrorType(ErrorType::HEAD_ZERO_ARGUMENTS);
-			// add good exepetion, throw "HEAD_ZERO_ARGUMENTS"; HEAD_NOT_MATCHING_CORRECT_ARGUMENT
-			head(astNode, childFunction);
+				setErrorLogger(ErrorType::HEAD_MISSING_ARGUMENTS);
+			head(astNode);
 
 		}else if (astNode->getFunction().getType() == FunctionType::NOT_CREATED_LIST) {
 			if (childFunction.getType() == FunctionType::NUMBER 
@@ -414,15 +411,18 @@ ASTNode* Compilator::runTreeBody(ASTNode* astNode)
 	return astNode;
 }
 
-void Compilator::head(ASTNode* root, Function& listFunciton)
+void Compilator::head(ASTNode* root)
 {
-	if (isTypeList(listFunciton.getType()))
-	{
-		if (listFunciton.getList().size() >= 1)
-			root->getFunction().replaceList(listFunciton.getList().front());
-		// what to throw if i have head([])
-	}
-	// TODO: trow exeption for not correct type
+	auto children = root->getChildrenNodes(); // vector
+
+	if (isTypeList(children[0]->getFunction().getType()) == false)
+		setErrorLogger(ErrorType::HEAD_NOT_MATCHING_CORRECT_ARGUMENT);
+
+	if(children[0]->getFunction().getList().size() == 0
+	&& children[0]->getFunction().getList().getIsLoop() == false)
+		setErrorLogger(ErrorType::HEAD_EMPTY_LIST_ARGUMENT);
+
+	root->getFunction().replaceList(children[0]->getFunction().getList().front());
 }
 
 void Compilator::tail(ASTNode* root)
@@ -435,12 +435,14 @@ void Compilator::tail(ASTNode* root)
 	 root->getFunction().replaceList(1, children[0]->getFunction().getList());
 }
 
-void Compilator::integer(ASTNode* root, Function& numberFunction)
+void Compilator::integer(ASTNode* root)
 {
-	if (numberFunction.getType() != FunctionType::NUMBER)
-		throw "Not correct argument for function int()"; // TODO: Better name
+	auto children = root->getChildrenNodes(); // vector
 
-	auto integer = std::floor(numberFunction.getList().front());
+	if (isTypeList(children[0]->getFunction().getType()))
+		setErrorLogger(ErrorType::INT_INCORRECT_ARGUMENTS);
+
+	auto integer = std::floor(children[0]->getFunction().getList().front());
 	root->getFunction().addNumber(integer);
 }
 

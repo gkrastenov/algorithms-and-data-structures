@@ -36,12 +36,13 @@ std::unordered_map<ErrorType, std::string> ErrorLogger::errorMessages =
     { ErrorType::LE_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Missing arguments for built-in function: \"le\"." },
     { ErrorType::NAND_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Missing arguments for built-in function: \"nand\"." },
    
-    { ErrorType::HEAD_TOO_MUCH_ARGUMENTS,    "ARGUMENT ERROR: Too much arguments for built-in function: \"head\"." },
-    { ErrorType::HEAD_ZERO_ARGUMENTS,    "ARGUMENT ERROR: Zero arguments for built-in function: \"head\"." },,
+
+ 
+    { ErrorType::HEAD_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Mssing arguments for built-in function: \"head\"." },,
     { ErrorType::HEAD_NOT_MATCHING_CORRECT_ARGUMENT,    "ARGUMENT ERROR: not matching correct argument for built-in function: \"head\"." },
+    { ErrorType::HEAD_EMPTY_LIST_ARGUMENT,    "ARGUMENT ERROR: Argument is empty list." },,
 
     { ErrorType::TAIL_TOO_MUCH_ARGUMENTS,    "ARGUMENT ERROR: Too much arguments for built-in function: \"tail\"." },
-    { ErrorType::TAIL_ZERO_ARGUMENTS,    "ARGUMENT ERROR: Zero arguments for built-in function: \"tail\"." },
     { ErrorType::TAIL_NOT_MATCHING_CORRECT_ARGUMENT,    "ARGUMENT ERROR: not matching correct argument for built-in function: \"tail\"." },
 
     { ErrorType::LENGTH_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Missing arguments for built-in function: \"length\"." },
@@ -57,7 +58,9 @@ std::unordered_map<ErrorType, std::string> ErrorLogger::errorMessages =
     { ErrorType::ADD_INCORRECT_ARGUMENTS,    "ARGUMENT ERROR: Arguments for built-in function \"add\" have to be numbers." },
     
     { ErrorType::IF_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Missing arguments for built-in function: \"if\"." },
+
     { ErrorType::INT_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Missing arguments for built-in function: \"int\"." },
+    { ErrorType::INT_INCORRECT_ARGUMENTS,    "ARGUMENT ERROR: Argument for built-in function \"int\" have to be number." },
 
     { ErrorType::MOD_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Missing arguments for built-in function: \"mod\"." },
     { ErrorType::MOD_INCORRECT_ARGUMENTS,    "ARGUMENT ERROR: Argument for built-in function \"mod\" have to be number." },

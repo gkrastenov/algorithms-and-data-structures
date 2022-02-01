@@ -260,7 +260,9 @@ inline const T& LList<T>::at(size_t pos) const
 template<class T>
 inline const T& LList<T>::front() const
 {
-    return at(0);
+    if (isLoop)
+        return start;
+    else return at(0);
 }
 
 template< class T>
