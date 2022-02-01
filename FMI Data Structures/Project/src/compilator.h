@@ -29,8 +29,8 @@ private:
 	};
 private:
 	const string DELIMETAR = "->"; // Before "->" is the name of function after that is given code from the user.
-	const string ARGUMENT_NUMBER = "Arg number";
-	const string ARGUMENT_LIST = "Arg List";
+	const string ARGUMENT_NUMBER = "Arg_number";
+	const string ARGUMENT_LIST = "Arg_list";
 	const string COMMA = ",";
 	
 	std::unordered_map<string, ContainerValue> container{};
@@ -44,6 +44,7 @@ private:
 	Function compiledFunction{};
 public:
 	Compilator() {};
+	~Compilator() = default;
 
 	int getContainerSize() const { return container.size(); }
 	const ErrorType getErrorType() const { return errorLogger.getErrorType(); }

@@ -708,7 +708,7 @@ std::vector<string> Compilator::getArguments(std::string& code) const
 	size_t index = 0;
 	while (code[index] == ' ') // skip spaces
 		++index;
-	
+
 	string curr = "";
 	for (size_t i = 0; i < code.size(); i++)
 	{
@@ -717,25 +717,28 @@ std::vector<string> Compilator::getArguments(std::string& code) const
 				arguments.push_back(curr);
 			else curr = "";
 			continue;
-		}else if (code[i] == '('){
+		}
+		else if (code[i] == '(') {
 			if (foundFirstOpenBracket == false) {
 				foundFirstOpenBracket = true;
 				curr = "";
 				continue;
 			}
-		}else if (code[i] == ')' && i + 1 == code.size()){
-			if(curr != "")
+		}
+		else if (code[i] == ')' && i + 1 == code.size()) {
+			if (curr != "")
 				arguments.push_back(curr);
 			continue;
-		}else if (code[i] == ')')
+		}
+		else if (code[i] == ')')
 		{
 			curr.push_back(code[i]);
-			if(curr != "")
+			if (curr != "")
 				arguments.push_back(curr);
 			curr = "";
 			continue;
-		}							
-		
+		}
+
 		curr.push_back(code[i]);
 	}
 	return arguments;

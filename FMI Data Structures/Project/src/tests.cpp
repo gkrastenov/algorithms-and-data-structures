@@ -5,41 +5,6 @@
 #include "compilator.h"
 
 
-TEST_CASE("Funcions who contains if clause")
-{
-	Compilator compilator;
-
-	std::stringstream myIf3("if(eq(5, 5), list(1,1,5), sub(5,7)");
-	compilator.compileCode(myIf3);
-	REQUIRE(compilator.output() == std::vector<double>{1,2,3,4,5});
-
-	std::stringstream myIf4("if(eq(5, 4), list(1,1,5), sub(5,7)");
-	compilator.compileCode(myIf4);
-	REQUIRE(compilator.output() == std::vector<double>{-2});
-
-	std::stringstream myIf1("if(mod(2, 2), div(300,2), div(10,2)");
-	compilator.compileCode(myIf1);
-	REQUIRE(compilator.output() == std::vector<double>{5});
-
-	std::stringstream myIf2("if(mod(1, 2), div(300,2), div(10,2)");
-	compilator.compileCode(myIf2);
-	REQUIRE(compilator.output() == std::vector<double>{150});
-
-	std::stringstream myIferror1("if(eq(5, 5), eq(5, 5), list(1,1,5), sub(5,7)");
-	REQUIRE_THROWS(compilator.compileCode(myIferror1));
-	REQUIRE(compilator.getErrorType() == ErrorType::IF_MISSING_ARGUMENTS);
-
-	std::stringstream myIferror2("if(eq(5, 5), sub(5,7))");
-	REQUIRE_THROWS(compilator.compileCode(myIferror2));
-	REQUIRE(compilator.getErrorType() == ErrorType::IF_MISSING_ARGUMENTS);
-
-	std::stringstream myIferror3("if(eq(5, 5))");
-	REQUIRE_THROWS(compilator.compileCode(myIferror3));
-	REQUIRE(compilator.getErrorType() == ErrorType::IF_MISSING_ARGUMENTS);
-
-	REQUIRE(compilator.getContainerSize() == 0);
-}
-
 TEST_CASE("Run built-in function")
 {
 	Compilator compilator;
@@ -968,4 +933,38 @@ TEST_CASE("Create and save function")
 		REQUIRE(compilator.output() == std::vector<double>{1});
 		REQUIRE(compilator.getContainerSize() == 0);
 	}
+}
+TEST_CASE("Funcions who contains if clause")
+{
+	Compilator compilator;
+
+	std::stringstream myIf3("if(eq(5, 5), list(1,1,5), sub(5,7)");
+	compilator.compileCode(myIf3);
+	REQUIRE(compilator.output() == std::vector<double>{1, 2, 3, 4, 5});
+
+	std::stringstream myIf4("if(eq(5, 4), list(1,1,5), sub(5,7)");
+	compilator.compileCode(myIf4);
+	REQUIRE(compilator.output() == std::vector<double>{-2});
+
+	std::stringstream myIf1("if(mod(2, 2), div(300,2), div(10,2)");
+	compilator.compileCode(myIf1);
+	REQUIRE(compilator.output() == std::vector<double>{5});
+
+	std::stringstream myIf2("if(mod(1, 2), div(300,2), div(10,2)");
+	compilator.compileCode(myIf2);
+	REQUIRE(compilator.output() == std::vector<double>{150});
+
+	std::stringstream myIferror1("if(eq(5, 5), eq(5, 5), list(1,1,5), sub(5,7)");
+	REQUIRE_THROWS(compilator.compileCode(myIferror1));
+	REQUIRE(compilator.getErrorType() == ErrorType::IF_MISSING_ARGUMENTS);
+
+	std::stringstream myIferror2("if(eq(5, 5), sub(5,7))");
+	REQUIRE_THROWS(compilator.compileCode(myIferror2));
+	REQUIRE(compilator.getErrorType() == ErrorType::IF_MISSING_ARGUMENTS);
+
+	std::stringstream myIferror3("if(eq(5, 5))");
+	REQUIRE_THROWS(compilator.compileCode(myIferror3));
+	REQUIRE(compilator.getErrorType() == ErrorType::IF_MISSING_ARGUMENTS);
+
+	REQUIRE(compilator.getContainerSize() == 0);
 }
