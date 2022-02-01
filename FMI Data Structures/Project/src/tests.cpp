@@ -99,7 +99,46 @@ TEST_CASE("Run built-in function")
 		REQUIRE_THROWS(compilator.compileCode(error4));
 		REQUIRE(compilator.getErrorType() == ErrorType::LIST_INCORRECT_ARGUMENTS);
 	}
+	SECTION("Run built-in function list")
+	{
+		std::stringstream tail1("tail([1 2 3])");
+		compilator.compileCode(tail1);
+		REQUIRE(compilator.output() == std::multiset<double>{2,3});
 
+		std::stringstream tail2("tail([3])");
+		compilator.compileCode(tail2);
+		REQUIRE(compilator.output() == std::multiset<double>{});
+
+		std::stringstream tail3("tail([])");
+		compilator.compileCode(tail3);
+		REQUIRE(compilator.output() == std::multiset<double>{});
+
+		std::stringstream tail4("tail(list(5, -0.5, 3))");
+		compilator.compileCode(tail4);
+		REQUIRE(compilator.output() == std::multiset<double>{4.5, 4});
+
+		std::stringstream tail5("tail(list(5, -0.5, 1))");
+		compilator.compileCode(tail5);
+		REQUIRE(compilator.output() == std::multiset<double>{});
+
+		std::stringstream tailError1("tail(5)");
+		REQUIRE_THROWS(compilator.compileCode(tailError1));
+		REQUIRE(compilator.getErrorType() == ErrorType::TAIL_NOT_MATCHING_CORRECT_ARGUMENT);
+
+		std::stringstream tailError2("tail(5, 5)");
+		REQUIRE_THROWS(compilator.compileCode(tailError2));
+		REQUIRE(compilator.getErrorType() == ErrorType::TAIL_MISSING_ARGUMENTS);
+
+		std::stringstream tailError3("tail([5], [5])");
+		REQUIRE_THROWS(compilator.compileCode(tailError3));
+		REQUIRE(compilator.getErrorType() == ErrorType::TAIL_MISSING_ARGUMENTS);
+
+		std::stringstream tail6("tail(list(1))");
+		compilator.compileCode(tail6);
+		REQUIRE(compilator.output() == std::multiset<double>{2,3,4,5,6,7,8,9,10,11,12,13,14,15,16});
+
+		REQUIRE(compilator.getContainerSize() == 0);
+	}
 	SECTION("Run built-in function int")
 	{
 		std::stringstream myInt("int(5.2)");
@@ -115,7 +154,6 @@ TEST_CASE("Run built-in function")
 		REQUIRE_THROWS(compilator.compileCode(myErrorListInt));
 		REQUIRE(compilator.getErrorType() == ErrorType::INT_MISSING_ARGUMENTS);
 	}
-
 	SECTION("Run built-in function eq")
 	{
 		std::multiset<double> isTrue{1};
@@ -472,7 +510,7 @@ TEST_CASE("Run built-in function")
 
 		REQUIRE(compilator.getContainerSize() == 0);
 	}	
-	/*
+
 	SECTION("Run built-in function in: concat")
 	{
 		std::stringstream myConcat1("concat([], [])");
@@ -491,28 +529,45 @@ TEST_CASE("Run built-in function")
 		REQUIRE(compilator.output() == std::multiset<double>{1});
 
 		std::stringstream myConcat4("concat([1 2], [3 4])");
+		compilator.compileCode(myConcat4);
 		REQUIRE(!compilator.getIsCreated());
 		REQUIRE(compilator.output() == std::multiset<double>{1, 2, 3, 4});
 
-		std::stringstream myConcat6("concat(5, 6)");
-		REQUIRE_THROWS(compilator.compileCode(myConcat6));
+		std::stringstream myConcat5("concat(list(-3,1,3), list(0,1,3))");
+		compilator.compileCode(myConcat5);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == std::multiset<double>{-3,-2,-1,0,1,2});
+
+		std::stringstream myConcatError1("concat(5, 6)");
+		REQUIRE_THROWS(compilator.compileCode(myConcatError1));
 		REQUIRE(compilator.getErrorType() == ErrorType::CONCAT_INCORRECT_ARGUMENTS);
 
-		std::stringstream myConcat7("concat(7, [1])");
-		REQUIRE_THROWS(compilator.compileCode(myConcat7));
+		std::stringstream myConcatError2("concat(7, [1])");
+		REQUIRE_THROWS(compilator.compileCode(myConcatError2));
 		REQUIRE(compilator.getErrorType() == ErrorType::CONCAT_INCORRECT_ARGUMENTS);
 
-		std::stringstream myConcat8("concat(5)");
-		REQUIRE_THROWS(compilator.compileCode(myConcat8));
+		std::stringstream myConcatError3("concat(5)");
+		REQUIRE_THROWS(compilator.compileCode(myConcatError3));
 		REQUIRE(compilator.getErrorType() == ErrorType::CONCAT_MISSING_ARGUMENTS);
 
-		std::stringstream myConcat9("concat([1 2 3 4)");
-		REQUIRE_THROWS(compilator.compileCode(myConcat9));
+		std::stringstream myConcatError4("concat([1 2 3 4])");
+		REQUIRE_THROWS(compilator.compileCode(myConcatError4));
 		REQUIRE(compilator.getErrorType() == ErrorType::CONCAT_MISSING_ARGUMENTS);
+
+		std::stringstream myConcatError5("concat(5, 5)");
+		REQUIRE_THROWS(compilator.compileCode(myConcatError5));
+		REQUIRE(compilator.getErrorType() == ErrorType::CONCAT_INCORRECT_ARGUMENTS);
+
+		std::stringstream myConcatError6("concat([1 2 3 4], 6)");
+		REQUIRE_THROWS(compilator.compileCode(myConcatError6));
+		REQUIRE(compilator.getErrorType() == ErrorType::CONCAT_INCORRECT_ARGUMENTS);
+
+		std::stringstream myConcatError7("concat(list(1), [5])");
+		REQUIRE_THROWS(compilator.compileCode(myConcatError7));
+		REQUIRE(compilator.getErrorType() == ErrorType::CONCAT_LOOP_LIST);
 
 		REQUIRE(compilator.getContainerSize() == 0);
 	}	
-	*/
 }
 
 TEST_CASE("Compile complex funcitons")

@@ -291,7 +291,8 @@ ASTNode* Compilator::runTreeBody(ASTNode* astNode)
 		}else if (astNode->getFunction().getType() == FunctionType::CONCAT) { // concat
 			if (astNode->getChindrenSize() != 2)
 				setErrorLogger(ErrorType::CONCAT_MISSING_ARGUMENTS);
-			concat(astNode);
+			if (i == 1)
+				concat(astNode);
 		}
 		else if (astNode->getFunction().getType() == FunctionType::SQRT) { // sqrt
 			if (astNode->getChindrenSize() != 1)
@@ -349,8 +350,8 @@ ASTNode* Compilator::runTreeBody(ASTNode* astNode)
 
 		} else if (astNode->getFunction().getType() == FunctionType::TAIL) { // tail
 			if (astNode->getChindrenSize() != 1)
-				errorLogger.setErrorType(ErrorType::ARGUMENT_EXEPTION);
-			tail(astNode, childFunction);
+				setErrorLogger(ErrorType::TAIL_MISSING_ARGUMENTS);
+			tail(astNode);
 
 		} else if (astNode->getFunction().getType() == FunctionType::HEAD) {// head
 			if (astNode->getChindrenSize() != 1)
@@ -388,15 +389,14 @@ void Compilator::head(ASTNode* root, Function& listFunciton)
 	// TODO: trow exeption for not correct type
 }
 
-void Compilator::tail(ASTNode* root, Function& listFunciton)
+void Compilator::tail(ASTNode* root)
 {
-	 if (isTypeList(listFunciton.getType()))
-	{
-		if (listFunciton.getList().size() >= 1)
-			root->getFunction().replaceList(1, listFunciton.getList());
-		// what to throw if i have tail([])
-	}
-	// TODO: trow exeption for not correct type
+	auto children = root->getChildrenNodes(); // vector
+
+	 if (isTypeList(children[0]->getFunction().getType()) == false)
+		 setErrorLogger(ErrorType::TAIL_NOT_MATCHING_CORRECT_ARGUMENT);
+	 
+	 root->getFunction().replaceList(1, children[0]->getFunction().getList());
 }
 
 void Compilator::integer(ASTNode* root, Function& numberFunction)
@@ -544,9 +544,12 @@ void Compilator::concat(ASTNode* root)
 		|| isTypeList(children[1]->getFunction().getType()) == false)
 		setErrorLogger(ErrorType::CONCAT_INCORRECT_ARGUMENTS);
 
+	if(children[0]->getFunction().getList().getIsLoop()
+    && children[0]->getFunction().getList().getCount() == 0)
+		setErrorLogger(ErrorType::CONCAT_LOOP_LIST);
 
-	children[0]->getFunction().getList();
-
+	children[0]->getFunction().getList().concat(children[1]->getFunction().getList());
+	root->getFunction().replaceList(0, children[0]->getFunction().getList());
 }
 
 void Compilator::list(ASTNode* root, const int countOfArguments = 0)

@@ -5,9 +5,11 @@ void Function::addList(const LList<double> otherList)
 	this->list += otherList;
 }
 
-void Function::replaceList(const size_t index, const LList<double>& list)
+void Function::replaceList(const size_t index, LList<double>& list)
 {
-	this->list.replace_fromPos(index, list);
+	if (index == 1)
+		this->list.replace_fromPos(index, list);
+   else this->list.replace(list);
 }
 
 void Function::replaceList(const double start, const double step = 1, const size_t count = 0)

@@ -49,10 +49,15 @@ public:
     T pop_atPos(size_t pos);
 
     LList& replace_fromPos(const size_t pos, const LList& other);
+    LList& replace(LList& other);
+
     bool eqCompare(const LList<T>& other);
     bool leCompare(const LList<T>& other);
     bool nand();
     void concat(LList<T>& other);
+
+    bool getIsLoop() const { return isLoop; }
+    double getCount() const { return countLoop; }
 
     void setStart(const double st) { start = st; }
     void setStep(const double sp) { step = sp; }
@@ -323,22 +328,59 @@ inline void LList<T>::push_end(const T& val)
 template<class T>
 inline LList<T>& LList<T>::replace_fromPos(const size_t pos, const LList& other)
 { 
-    isLoop = other.isLoop;
-    start = other.start;
-    step = other.step;
-    countLoop = other.countLoop;
-
-    if (other.size() > 1)
+    if (pos == 1)
     {
-        Node* temp = other.head->next;
-        while (temp)
+        if (other.isLoop)
         {
-            this->push_end(temp->data);
-            temp = temp->next;
+            if (other.countLoop == 1)
+                return *this;
+
+            isLoop = true;
+            start = other.start + other.step;
+            step = other.step;
+
+            if(other.countLoop != 0)
+                countLoop = other.countLoop - 1;          
+        }
+        else {
+            if (other.sz == 0)
+                return *this;
+
+            isLoop = other.isLoop;
+            start = other.start;
+            step = other.step;
+            countLoop = other.countLoop;
+
+            if (other.sz == 1)
+            {
+                this->head = nullptr;
+                this->tail = nullptr;
+            }
+            else {
+                if (other.head != nullptr)
+                    this->head = other.head->next;
+                this->tail = other.tail;
+
+            }
+            this->sz = other.sz - 1;
         }
     }
     return *this;
 }
+
+template<class T>
+inline LList<T>& LList<T>::replace(LList& other)
+{
+    isLoop = other.isLoop;
+    start = other.start;
+    step = other.step;
+    countLoop = other.countLoop;
+    this->head = other.head;
+    this->tail = other.tail;
+    this->sz = other.sz;
+    return *this;
+}
+
 
 template<class T>
 inline bool LList<T>::eqCompare(const LList<T>& other)
@@ -393,7 +435,33 @@ inline bool LList<T>::nand()
 
 template<class T>
 inline void LList<T>::concat(LList<T>& other)
-{
+{      
+    // if i concat two loop
+    if ((isLoop && countLoop != 0)
+        && (other.isLoop && other.countLoop != 0))
+    {
+        sz = 0;
+
+        int curr = start;
+        for (size_t i = 0; i < countLoop; i++)
+        {
+            push_end(curr);
+            curr += step;
+        }
+
+        curr = other.start;
+        for (size_t i = 0; i < other.countLoop; i++)
+        {
+            push_end(curr);
+            curr += other.step;
+        }
+
+        isLoop = false;
+        step = 0;
+        start = 0;
+        countLoop = 0;
+        return;
+    }
     if (other.size() == 0)
         return;
 
@@ -402,7 +470,7 @@ inline void LList<T>::concat(LList<T>& other)
 
     if (sz == 0 && other.size() == 1)
     {
-        this->push_front(other.head);
+        this->push_front(other.front());
         return;
     }
 

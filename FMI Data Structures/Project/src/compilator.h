@@ -71,7 +71,7 @@ private:
 
 	// Built-in function
 	void head(ASTNode* root, Function& listFunciton);
-	void tail(ASTNode* root, Function& listFunciton);
+	void tail(ASTNode* root);
 	void integer(ASTNode* root, Function& numberFunction);
 	void mod(ASTNode* root);
 	void div(ASTNode* root);

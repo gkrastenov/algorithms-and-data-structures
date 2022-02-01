@@ -45,8 +45,10 @@ std::unordered_map<ErrorType, std::string> ErrorLogger::errorMessages =
     { ErrorType::TAIL_NOT_MATCHING_CORRECT_ARGUMENT,    "ARGUMENT ERROR: not matching correct argument for built-in function: \"tail\"." },
 
     { ErrorType::LENGTH_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Missing arguments for built-in function: \"length\"." },
+   
     { ErrorType::CONCAT_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Missing arguments for built-in function: \"concat\"." },
     { ErrorType::CONCAT_INCORRECT_ARGUMENTS,    "ARGUMENT ERROR: Arguments for built-in function \"concat\" have to be list." },
+    { ErrorType::CONCAT_LOOP_LIST,    "ARGUMENT ERROR: Can not be cocnat if first argument is loop list." },
 
     { ErrorType::SUB_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Missing arguments for built-in function: \"sub\"." },
     { ErrorType::SUB_INCORRECT_ARGUMENTS,    "ARGUMENT ERROR: Arguments for built-in function \"sub\" have to be numbers." },
