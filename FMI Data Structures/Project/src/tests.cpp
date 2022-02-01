@@ -9,6 +9,14 @@ TEST_CASE("Funcions who contains if clause")
 {
 	Compilator compilator;
 
+	std::stringstream myIf3("if(eq(5, 5), list(1,1,5), sub(5,7)");
+	compilator.compileCode(myIf3);
+	REQUIRE(compilator.output() == std::multiset<double>{1,2,3,4,5});
+
+	std::stringstream myIf4("if(eq(5, 4), list(1,1,5), sub(5,7)");
+	compilator.compileCode(myIf4);
+	REQUIRE(compilator.output() == std::multiset<double>{-2});
+
 	std::stringstream myIf1("if(mod(2, 2), div(300,2), div(10,2)");
 	compilator.compileCode(myIf1);
 	REQUIRE(compilator.output() == std::multiset<double>{5});
@@ -16,6 +24,18 @@ TEST_CASE("Funcions who contains if clause")
 	std::stringstream myIf2("if(mod(1, 2), div(300,2), div(10,2)");
 	compilator.compileCode(myIf2);
 	REQUIRE(compilator.output() == std::multiset<double>{150});
+
+	std::stringstream myIferror1("if(eq(5, 5), eq(5, 5), list(1,1,5), sub(5,7)");
+	REQUIRE_THROWS(compilator.compileCode(myIferror1));
+	REQUIRE(compilator.getErrorType() == ErrorType::IF_MISSING_ARGUMENTS);
+
+	std::stringstream myIferror2("if(eq(5, 5), sub(5,7))");
+	REQUIRE_THROWS(compilator.compileCode(myIferror2));
+	REQUIRE(compilator.getErrorType() == ErrorType::IF_MISSING_ARGUMENTS);
+
+	std::stringstream myIferror3("if(eq(5, 5))");
+	REQUIRE_THROWS(compilator.compileCode(myIferror3));
+	REQUIRE(compilator.getErrorType() == ErrorType::IF_MISSING_ARGUMENTS);
 }
 
 TEST_CASE("Run built-in function")
@@ -519,8 +539,8 @@ TEST_CASE("Compile complex funcitons")
 		REQUIRE(compilator.getContainerSize() == 2);
 		REQUIRE(compilator.output() == isCreated);
 		
-		std::stringstream isOddCall("isOdd(5.2)");
-		compilator.compileCode(isOddCall);
+		std::stringstream isOddCall1("isOdd(53)");
+		compilator.compileCode(isOddCall1);
 		REQUIRE(!compilator.getIsCreated());
 		REQUIRE(compilator.getContainerSize() == 2);
 		REQUIRE(compilator.output() == std::multiset<double>{1});
@@ -561,8 +581,19 @@ TEST_CASE("Compile complex funcitons")
 		compilator.compileCode(isEvenExampleWithNumber);
 		REQUIRE(!compilator.getIsCreated());
 		REQUIRE(compilator.getContainerSize() == 5);
-		REQUIRE(compilator.output() == std::multiset<double> {1});
+		REQUIRE(compilator.output() == std::multiset<double> {0});
 
+		std::stringstream isOddCall2("isOdd(50)");
+		compilator.compileCode(isOddCall2);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.getContainerSize() == 5);
+		REQUIRE(compilator.output() == std::multiset<double>{0});
+
+		std::stringstream isEven2("isEven(12)");
+		compilator.compileCode(isEven2);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.getContainerSize() == 5);
+		REQUIRE(compilator.output() == std::multiset<double> {1});
 	}
 }
 

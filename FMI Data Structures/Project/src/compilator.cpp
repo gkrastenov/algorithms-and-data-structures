@@ -259,12 +259,14 @@ ASTNode* Compilator::runTreeBody(ASTNode* astNode)
 			if (isTypeList(ifTrue->getFunction().getType()))		
 				astNode->getFunction().replaceList(0, ifTrue->getFunction().getList());
 			else astNode->getFunction().replaceList(ifTrue->getFunction().getList().front());
+			return astNode;
 		}
 		else {
 			ASTNode* ifFalse = runTreeBody(children[2]);
 			if (isTypeList(ifFalse->getFunction().getType()))
 				astNode->getFunction().replaceList(0, ifFalse->getFunction().getList());
 			else astNode->getFunction().replaceList(ifFalse->getFunction().getList().front());
+			return astNode;
 		}
 
 	}
@@ -795,7 +797,7 @@ bool Compilator::isBasicFunction(const string& code) const
 	return foundCallOpen == string::npos && foundCallClosed == string::npos;
 }
 
-std::multiset<double> Compilator::output() const
+std::multiset<double> Compilator::output() 
 {
 	if (canBePrinted == false){
 		if(isCreated)

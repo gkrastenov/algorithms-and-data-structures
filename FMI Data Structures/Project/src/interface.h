@@ -54,7 +54,7 @@ public:
 	const FunctionType setType(const FunctionType funcType){ return type = funcType;}
 
 	const string getName() const { return name; }
-	LList<double> getList() const{ return list; }
+	LList<double>& getList() { return list; }
 	void addNumber(double number) { list.push_end(number); }
 	void addList(const LList<double> otherList);
 

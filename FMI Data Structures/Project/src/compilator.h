@@ -52,7 +52,7 @@ public:
 
 	void compileCode(std::istream& stream);
 
-	std::multiset<double> output() const;
+	std::multiset<double> output();
 
 private:
 	void setErrorLogger(const ErrorType errorType);

@@ -323,6 +323,11 @@ inline void LList<T>::push_end(const T& val)
 template<class T>
 inline LList<T>& LList<T>::replace_fromPos(const size_t pos, const LList& other)
 { 
+    isLoop = other.isLoop;
+    start = other.start;
+    step = other.step;
+    countLoop = other.countLoop;
+
     if (other.size() > 1)
     {
         Node* temp = other.head->next;
