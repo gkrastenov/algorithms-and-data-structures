@@ -3,7 +3,6 @@
 
 #include "Exeptions/errorlogger.h"
 #include "Structures/ast.h"
-
 #include <stack>
 #include <set>
 #include <iostream>
@@ -85,8 +84,9 @@ private:
 	void sqrt(ASTNode* root, Function& numberFunction);
 	void sub(ASTNode* root);
 	void concat(ASTNode* root);
+	void read(ASTNode* root);
 	void list(ASTNode* root, const int countOfArguments);
-	//void write(ASTNode* root);
+	void write(ASTNode* root);
 
 	string buildCompileCode(const string& code, const std::vector<string>& arguments);
 	bool replace(string& str, const string& from, const string& to);

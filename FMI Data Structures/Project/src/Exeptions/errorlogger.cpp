@@ -53,6 +53,9 @@ std::unordered_map<ErrorType, std::string> ErrorLogger::errorMessages =
     { ErrorType::CONCAT_INCORRECT_ARGUMENTS,    "ARGUMENT ERROR: Arguments for built-in function \"concat\" have to be list." },
     { ErrorType::CONCAT_LOOP_LIST,    "ARGUMENT ERROR: Can not be concat if first argument is loop list." },
 
+    { ErrorType::READ_INCORRECT_ARGUMENTS,    "ARGUMENT ERROR: Incorrect argument for read" },
+    { ErrorType::READ_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Missing arguments for built-in function: \"read\"." },
+
     { ErrorType::SUB_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Missing arguments for built-in function: \"sub\"." },
     { ErrorType::SUB_INCORRECT_ARGUMENTS,    "ARGUMENT ERROR: Arguments for built-in function \"sub\" have to be numbers." },
 

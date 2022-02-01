@@ -313,6 +313,12 @@ ASTNode* Compilator::runTreeBody(ASTNode* astNode)
 		return astNode;
 	}
 
+	if (astNode->getFunction().getType() == FunctionType::READ) { // read
+		if (astNode->getChindrenSize() != 0)
+			setErrorLogger(ErrorType::READ_MISSING_ARGUMENTS);
+		read(astNode);
+	}
+
 	if (astNode->getChindrenSize() == 0)	
 		return astNode;
 	
@@ -388,7 +394,8 @@ ASTNode* Compilator::runTreeBody(ASTNode* astNode)
 				setErrorLogger(ErrorType::INT_MISSING_ARGUMENTS);
 			integer(astNode);
 
-		} else if (astNode->getFunction().getType() == FunctionType::TAIL) { // tail
+		
+		}else if (astNode->getFunction().getType() == FunctionType::TAIL) { // tail
 			if (astNode->getChindrenSize() != 1)
 				setErrorLogger(ErrorType::TAIL_MISSING_ARGUMENTS);
 			tail(astNode);
@@ -589,6 +596,29 @@ void Compilator::concat(ASTNode* root)
 	root->getFunction().replaceList(0, children[0]->getFunction().getList());
 }
 
+void Compilator::read(ASTNode* root)
+{
+	string input;
+	std::cout << "> read(): ";
+    std::getline(std::cin, input);
+	if (input.size() == 0)
+		setErrorLogger(ErrorType::READ_INCORRECT_ARGUMENTS);
+
+	bool minus = false;
+	for (size_t i = 0; i < input.size(); i++)
+	{
+		if (input[i] == '-')
+		{
+			if(minus)
+				setErrorLogger(ErrorType::READ_INCORRECT_ARGUMENTS);
+			minus = true;
+		}
+		if(isdigit(input[i]) == false)
+			setErrorLogger(ErrorType::READ_INCORRECT_ARGUMENTS);
+	}
+	root->getFunction().replaceList(stringToNumber(input));
+}
+
 void Compilator::list(ASTNode* root, const int countOfArguments = 0)
 {
 	auto children = root->getChildrenNodes(); // vector
@@ -626,6 +656,13 @@ void Compilator::list(ASTNode* root, const int countOfArguments = 0)
 
 		root->getFunction().replaceList(start, step, count);
 	}
+}
+
+void Compilator::write(ASTNode* root)
+{
+	/*
+	if (isValidBasicFunction(code) == false)
+		setErrorLogger(ErrorType::SYNTAX_INVALID);*/
 }
 
 std::vector<string> Compilator::getArguments(std::string& code) const
