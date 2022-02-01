@@ -768,10 +768,10 @@ FunctionType Compilator::getFunctionType(const string& funcName) const
 	return FunctionType::UNKNOWN;
 }
 
-void Compilator::setErrorLogger(const ErrorType errorType)
+void Compilator::setErrorLogger(const ErrorType& errorType)
 {
 	errorLogger.setErrorType(errorType);
-	throw errorLogger.getErrorMessages();
+	throw std::runtime_error(errorLogger.getErrorMessages());
 }
 
 void Compilator::createNumberNode(std::stack<ASTNode*>& stack, const string& code)

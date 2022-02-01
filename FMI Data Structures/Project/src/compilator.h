@@ -57,7 +57,7 @@ public:
 	string printErrorMessage() { return errorLogger.getErrorMessages(); }
 
 private:
-	void setErrorLogger(const ErrorType errorType);
+	void setErrorLogger(const ErrorType& errorType);
 	void createNumberNode(std::stack<ASTNode*>& stack, const string& code);
 	
 	double stringToNumber(const string& number);

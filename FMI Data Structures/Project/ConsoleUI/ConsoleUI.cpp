@@ -41,7 +41,7 @@ bool runCode(Compilator& compilator, std::stringstream& ss)
 	}
 	catch (const std::exception&)
 	{
-		compilator.printErrorMessage();
+		std::cout << compilator.printErrorMessage() << std::endl;
 		return false;
 	}
 	return true;
@@ -49,7 +49,6 @@ bool runCode(Compilator& compilator, std::stringstream& ss)
 
 void console(Compilator& compilator)
 {
-	// read input
 	std::cout << "Write 'exit' for exiting the program\n";
 
 	std::string input;

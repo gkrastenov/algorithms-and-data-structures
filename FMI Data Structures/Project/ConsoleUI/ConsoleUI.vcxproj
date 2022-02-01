@@ -140,10 +140,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\src\compilator.cpp" />
+    <ClCompile Include="..\src\Exeptions\errorlogger.cpp" />
     <ClCompile Include="..\src\interface.cpp" />
     <ClCompile Include="ConsoleUI.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\Exeptions\errorlogger.h" />
     <ClInclude Include="..\src\interface.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
