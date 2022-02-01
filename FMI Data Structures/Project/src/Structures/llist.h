@@ -516,9 +516,9 @@ inline void LList<T>::print(std::vector<T>& vec) const
         if (countLoop == 0)
         {
             if (sz == 0) {
-                // always print first 15 number of list
+                // always print first 10000 numbers of list
                 double curr = start;
-                for (size_t i = 0; i < 15; i++)
+                for (size_t i = 0; i < 10000; i++)
                 {
                     vec.push_back(curr);
                     curr += step;
@@ -532,9 +532,9 @@ inline void LList<T>::print(std::vector<T>& vec) const
                     temp = temp->next;
                 }
 
-                // always print first 15 number of list
+                // always print first 10000 numbers of list
                 double curr = start;
-                for (size_t i = 0; i < 15; i++)
+                for (size_t i = 0; i < 10000; i++)
                 {
                     vec.push_back(curr);
                     curr += step;
