@@ -49,11 +49,13 @@ public:
 	int getContainerSize() const { return container.size(); }
 	const ErrorType getErrorType() const { return errorLogger.getErrorType(); }
 	bool getIsCreated() const { return isCreated; }
+	bool getCanBePrint() const { return canBePrinted; }
 	bool isListCompiledFunction() const { return isTypeList(compiledFunction.getType()); }
 
 	void compileCode(std::istream& stream);
 
 	std::vector<double> output();
+	string printErrorMessage() { return errorLogger.getErrorMessages(); }
 
 private:
 	void setErrorLogger(const ErrorType errorType);

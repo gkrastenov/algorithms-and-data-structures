@@ -438,7 +438,7 @@ inline bool LList<T>::nand()
 template<class T>
 inline void LList<T>::concat(LList<T>& other)
 {      
-    // if i concat two loop
+    // if i concat two loop with count
     if ((isLoop && countLoop != 0)
         && (other.isLoop && other.countLoop != 0))
     {
@@ -464,6 +464,30 @@ inline void LList<T>::concat(LList<T>& other)
         countLoop = 0;
         return;
     }
+
+    // if i concat normal list and one loop list with count
+    if (isLoop == false && other.isLoop && other.countLoop != 0)
+    {
+        int curr = other.start;
+        for (size_t i = 0; i < other.countLoop; i++)
+        {
+            push_end(curr);
+            curr += other.step;
+        }
+
+        return;
+    }
+
+    // if i concat normal list and one loop list without count
+    if (isLoop == false && other.isLoop && other.countLoop == 0)
+    {
+        isLoop = true;
+        start = other.start;
+        step = other.step;
+        countLoop = other.countLoop;
+        return;
+    }
+
     if (other.size() == 0)
         return;
 
@@ -491,13 +515,32 @@ inline void LList<T>::print(std::vector<T>& vec) const
     {
         if (countLoop == 0)
         {
-            // always print first 15 number of list
-            double curr = start;
-            for (size_t i = 0; i < 15; i++)
-            {
-                vec.push_back(curr);
-                curr += step;
+            if (sz == 0) {
+                // always print first 15 number of list
+                double curr = start;
+                for (size_t i = 0; i < 15; i++)
+                {
+                    vec.push_back(curr);
+                    curr += step;
+                }
             }
+            else {
+                Node* temp = head;
+                while (temp)
+                {
+                    vec.push_back(temp->data);
+                    temp = temp->next;
+                }
+
+                // always print first 15 number of list
+                double curr = start;
+                for (size_t i = 0; i < 15; i++)
+                {
+                    vec.push_back(curr);
+                    curr += step;
+                }
+            }
+            
         }
         else {
             double curr = start;

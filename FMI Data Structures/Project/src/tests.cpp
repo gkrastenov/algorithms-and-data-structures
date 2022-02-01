@@ -552,57 +552,67 @@ TEST_CASE("Run built-in function")
 
 	SECTION("Run built-in function in: concat")
 	{
-		std::stringstream myConcat1("concat([], [])");
-		compilator.compileCode(myConcat1);
+		std::stringstream cocnat("concat([1], list(1,2,4))");
+		compilator.compileCode(cocnat);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == std::vector<double>{1, 1, 3, 5, 7});
+
+		std::stringstream loopConcat("concat([1], list(1, 2))");
+		compilator.compileCode(loopConcat);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == std::vector<double>{1, 1,3,5,7,9,11,13,15,17,19,21,23,25,27,29});
+
+		std::stringstream concat1("concat([], [])");
+		compilator.compileCode(concat1);
 		REQUIRE(!compilator.getIsCreated());
 		REQUIRE(compilator.output() == std::vector<double>());
 
-		std::stringstream myConcat2("concat([1], [1])");
-		compilator.compileCode(myConcat2);
+		std::stringstream concat2("concat([1], [1])");
+		compilator.compileCode(concat2);
 		REQUIRE(!compilator.getIsCreated());
 		REQUIRE(compilator.output() == std::vector<double>{1, 1});
 
-		std::stringstream myConcat3("concat([1], [])");
-		compilator.compileCode(myConcat3);
+		std::stringstream concat3("concat([1], [])");
+		compilator.compileCode(concat3);
 		REQUIRE(!compilator.getIsCreated());
 		REQUIRE(compilator.output() == std::vector<double>{1});
 
-		std::stringstream myConcat4("concat([1 2], [3 4])");
-		compilator.compileCode(myConcat4);
+		std::stringstream concat4("concat([1 2], [3 4])");
+		compilator.compileCode(concat4);
 		REQUIRE(!compilator.getIsCreated());
 		REQUIRE(compilator.output() == std::vector<double>{1, 2, 3, 4});
 
-		std::stringstream myConcat5("concat(list(-3,1,3), list(0,1,3))");
-		compilator.compileCode(myConcat5);
+		std::stringstream concat5("concat(list(-3,1,3), list(0,1,3))");
+		compilator.compileCode(concat5);
 		REQUIRE(!compilator.getIsCreated());
 		REQUIRE(compilator.output() == std::vector<double>{-3,-2,-1,0,1,2});
 
-		std::stringstream myConcatError1("concat(5, 6)");
-		REQUIRE_THROWS(compilator.compileCode(myConcatError1));
+		std::stringstream concatError1("concat(5, 6)");
+		REQUIRE_THROWS(compilator.compileCode(concatError1));
 		REQUIRE(compilator.getErrorType() == ErrorType::CONCAT_INCORRECT_ARGUMENTS);
 
-		std::stringstream myConcatError2("concat(7, [1])");
-		REQUIRE_THROWS(compilator.compileCode(myConcatError2));
+		std::stringstream concatError2("concat(7, [1])");
+		REQUIRE_THROWS(compilator.compileCode(concatError2));
 		REQUIRE(compilator.getErrorType() == ErrorType::CONCAT_INCORRECT_ARGUMENTS);
 
-		std::stringstream myConcatError3("concat(5)");
-		REQUIRE_THROWS(compilator.compileCode(myConcatError3));
+		std::stringstream concatError3("concat(5)");
+		REQUIRE_THROWS(compilator.compileCode(concatError3));
 		REQUIRE(compilator.getErrorType() == ErrorType::CONCAT_MISSING_ARGUMENTS);
 
-		std::stringstream myConcatError4("concat([1 2 3 4])");
-		REQUIRE_THROWS(compilator.compileCode(myConcatError4));
+		std::stringstream concatError4("concat([1 2 3 4])");
+		REQUIRE_THROWS(compilator.compileCode(concatError4));
 		REQUIRE(compilator.getErrorType() == ErrorType::CONCAT_MISSING_ARGUMENTS);
 
-		std::stringstream myConcatError5("concat(5, 5)");
-		REQUIRE_THROWS(compilator.compileCode(myConcatError5));
+		std::stringstream concatError5("concat(5, 5)");
+		REQUIRE_THROWS(compilator.compileCode(concatError5));
 		REQUIRE(compilator.getErrorType() == ErrorType::CONCAT_INCORRECT_ARGUMENTS);
 
-		std::stringstream myConcatError6("concat([1 2 3 4], 6)");
-		REQUIRE_THROWS(compilator.compileCode(myConcatError6));
+		std::stringstream concatError6("concat([1 2 3 4], 6)");
+		REQUIRE_THROWS(compilator.compileCode(concatError6));
 		REQUIRE(compilator.getErrorType() == ErrorType::CONCAT_INCORRECT_ARGUMENTS);
 
-		std::stringstream myConcatError7("concat(list(1), [5])");
-		REQUIRE_THROWS(compilator.compileCode(myConcatError7));
+		std::stringstream concatError7("concat(list(1), [5])");
+		REQUIRE_THROWS(compilator.compileCode(concatError7));
 		REQUIRE(compilator.getErrorType() == ErrorType::CONCAT_LOOP_LIST);
 
 		REQUIRE(compilator.getContainerSize() == 0);
