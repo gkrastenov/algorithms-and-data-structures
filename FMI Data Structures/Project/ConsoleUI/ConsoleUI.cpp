@@ -96,14 +96,21 @@ int main()
 	char symbol;
 	std::cin >> symbol;
 
-	switch (symbol)
+	try
 	{
-	case 'c': console(compilator);
-		break;
-	case 'f': file(compilator);
-		break;
-	default:
-		std::cout << "Enter correct symbol: c or f\n";
-		break;
+		switch (symbol)
+		{
+		case 'c': console(compilator);
+			break;
+		case 'f': file(compilator);
+			break;
+		default:
+			std::cout << "Enter correct symbol: c or f\n";
+			break;
+		}
+	}
+	catch (const std::exception&)
+	{
+		std::cout << "Code can not be compiled\n";
 	}
 }

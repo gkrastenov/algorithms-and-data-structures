@@ -32,7 +32,7 @@ string Compilator::buildCompileCode(const string& code, const std::vector<string
 					curr.push_back(buildCode[i]);
 				}
 				if (replace(buildCode, curr, newCode) == false)
-					setErrorLogger(ErrorType::NOT_FOUNDED_FUNCTION); // TODO: Change error type with: cant be replaced string or something else.
+					setErrorLogger(ErrorType::NOT_FOUNDED_FUNCTION);
 
 				if (isdigit(newCode[0]) || newCode[0] == '-')
 					i = stopIndex + newCode.size();
@@ -91,7 +91,7 @@ void Compilator::compileCode(std::istream& stream)
 
 		if (containerContains(functionName))
 			isCreated = false;
-	   else isCreated = true;
+		else isCreated = true;
 
 		unsigned int countOfArguments = countArguments(functionCode);
 		container[functionName] = ContainerValue(countOfArguments, functionCode);
@@ -102,7 +102,7 @@ void Compilator::compileCode(std::istream& stream)
 
 		if (isBasicFunction(code))
 		{
-			if(isValidBasicFunction(code) == false)
+			if (isValidBasicFunction(code) == false)
 				setErrorLogger(ErrorType::SYNTAX_INVALID);
 
 			createTreeBody(code);
@@ -117,10 +117,11 @@ void Compilator::compileCode(std::istream& stream)
 	}
 }
 
-int Compilator::createTreeBody(const string& funCode)
+
+void Compilator::createTreeBody(const string& funCode)
 {
 	if (funCode.empty())
-		throw "Empty Compile code";
+		setErrorLogger(ErrorType::COMPILE);
 
 	size_t index = 0;
 	while (funCode[index] == ' ') // skip all spaces
@@ -128,9 +129,6 @@ int Compilator::createTreeBody(const string& funCode)
 	
 	bool openListBracket = false; // -> [
 	bool closedListBracket = false; // -> ]
-
-	bool openFunctionBracket = false; // -> (
-	bool closedFunctionBracket = false; // -> )
 
 	bool minus = false;
 
@@ -185,10 +183,7 @@ int Compilator::createTreeBody(const string& funCode)
 
 			openListBracket = false;
 			closedListBracket = false;
-			/*
-			if (curr == "")
-				continue;
-			*/
+
 			if (isalnum(curr[0]) || curr[0] == '-')
 				createNumberNode(stack, curr);
 			if (!stack.empty())
@@ -327,7 +322,13 @@ ASTNode* Compilator::runTreeBody(ASTNode* astNode)
 		auto curr = runTreeBody(astNode->getChildrenNodeByIndex(i));
 		auto childFunction = curr->getFunction();
 
-		if (astNode->getFunction().getType() == FunctionType::LIST)
+		if (astNode->getFunction().getType() == FunctionType::WRITE)
+		{
+			if (astNode->getChindrenSize() != 1)
+				astNode->getFunction().replaceList(-1);
+			else write(astNode);
+
+		}else if (astNode->getFunction().getType() == FunctionType::LIST)
 		{
 			if(astNode->getChindrenSize() > 3 || astNode->getChindrenSize() < 0)
 				setErrorLogger(ErrorType::LIST_MISSING_ARGUMENTS);
@@ -344,7 +345,7 @@ ASTNode* Compilator::runTreeBody(ASTNode* astNode)
 		else if (astNode->getFunction().getType() == FunctionType::SQRT) { // sqrt
 			if (astNode->getChindrenSize() != 1)
 				setErrorLogger(ErrorType::SQRT_MISSING_ARGUMENT);
-			sqrt(astNode, childFunction);
+			sqrt(astNode);
 
 		}else if (astNode->getFunction().getType() == FunctionType::ADD) { // add
 			if (astNode->getChindrenSize() != 2)
@@ -411,14 +412,13 @@ ASTNode* Compilator::runTreeBody(ASTNode* astNode)
 				astNode->getFunction().addList(childFunction.getList());
 			}
 			else {
-				errorLogger.setErrorType(ErrorType::ARGUMENT_ONLY_NUMBERS);
-				throw "ARGUMENT_ONLY_NUMBERS";
+				setErrorLogger(ErrorType::ARGUMENT_ONLY_NUMBERS);
 			}
 		}
 	}
 
 	if (astNode->getFunction().getType() == FunctionType::NOT_CREATED_LIST) {
-		astNode->getFunction().setType(FunctionType::CREATED_LIST); // TODO: maybe have to create new type: CREATED_LIST
+		astNode->getFunction().setType(FunctionType::CREATED_LIST);
 	}
 
 	return astNode;
@@ -550,15 +550,17 @@ void Compilator::add(ASTNode* root)
 	root->getFunction().replaceList(result);
 }
 
-void Compilator::sqrt(ASTNode* root, Function& numberFunction)
+void Compilator::sqrt(ASTNode* root)
 {
-	if(isTypeList(numberFunction.getType()))
+	auto children = root->getChildrenNodes(); //vector;
+
+	if(isTypeList(children[0]->getFunction().getType()))
 		setErrorLogger(ErrorType::SQRT_INCORRECT_ARGUMENTS);
 
-	if(numberFunction.getList().size() != 1)
+	if(children[0]->getFunction().getList().size() != 1)
 		setErrorLogger(ErrorType::SQRT_INCORRECT_ARGUMENTS);
 
-	double result = std::sqrt(numberFunction.getList().front());
+	double result = std::sqrt(children[0]->getFunction().getList().front());
 	root->getFunction().replaceList(result);
 }
 
@@ -660,9 +662,42 @@ void Compilator::list(ASTNode* root, const int countOfArguments = 0)
 
 void Compilator::write(ASTNode* root)
 {
-	/*
-	if (isValidBasicFunction(code) == false)
-		setErrorLogger(ErrorType::SYNTAX_INVALID);*/
+	auto children = root->getChildrenNodes();
+	if (children[0] != nullptr)
+	{
+		std::vector<double> vec;
+		children[0]->getFunction().getList().print(vec);
+
+		if (isTypeList(children[0]->getFunction().getType()))
+		{
+			std::cout << '[';
+			for (size_t i = 0; i < vec.size() - 1; i++)
+			{
+				std::cout << vec[i];
+				std::cout << ' ';
+			}
+			std::cout << vec[vec.size() - 1];
+			std::cout << ']' << std::endl;
+		}
+		else {
+			if (vec.size() == 1) {
+				std::cout << vec[0] << std::endl;
+			}
+			else {
+				for (size_t i = 0; i < vec.size() - 1; i++)
+				{
+					std::cout << vec[i];
+					std::cout << ' ';
+				}
+				std::cout << vec[vec.size() - 1] << std::endl;
+			}
+		}
+
+		root->getFunction().replaceList(0);
+	}
+	else {
+		root->getFunction().replaceList(-1);
+	}		
 }
 
 std::vector<string> Compilator::getArguments(std::string& code) const

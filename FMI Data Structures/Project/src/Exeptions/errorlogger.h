@@ -6,6 +6,8 @@
 // Every type of error that can be logged by the ErrorLogger
 enum class ErrorType : unsigned int
 {
+    COMPILE,
+
     // Operations
     WRONG_USE_OPERATION_MODIFIED_BUILT_IN_FUNCTION,
     WRONG_CAN_NOT_CONVERT_STRING_TO_NUMBER,
@@ -95,7 +97,10 @@ private:
 private:
      /*!< Maps the error types to the error messages */
       std::unordered_map<ErrorType, std::string> errorMessages{
-        // Operations
+
+            { ErrorType::COMPILE,   "COMPILE ERROR: code can not be compiled." },
+
+            // Operations
             { ErrorType::WRONG_USE_OPERATION_MODIFIED_BUILT_IN_FUNCTION,   "ERROR: Built-in function must not be modified." },
             { ErrorType::WRONG_CAN_NOT_CONVERT_STRING_TO_NUMBER,   "ERROR: Can not convert string to number." },
 
@@ -127,7 +132,6 @@ private:
             { ErrorType::EQ_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Missing arguments for built-in function: \"eq\"." },
             { ErrorType::LE_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Missing arguments for built-in function: \"le\"." },
             { ErrorType::NAND_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Missing arguments for built-in function: \"nand\"." },
-
 
 
             { ErrorType::HEAD_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Mssing arguments for built-in function: \"head\"." },

@@ -57,14 +57,9 @@ public:
 	string printErrorMessage() { return errorLogger.getErrorMessages(); }
 
 private:
-	void setErrorLogger(const ErrorType& errorType);
-	void createNumberNode(std::stack<ASTNode*>& stack, const string& code);
-	
-	double stringToNumber(const string& number);
-
 	FunctionType getFunctionType(const string& funcName) const;
 
-	int createTreeBody(const string& funCode);
+	void createTreeBody(const string& funCode);
 	ASTNode* runTreeBody(ASTNode* astNode);
 
 	// Check if in the container exist function with given name.
@@ -81,7 +76,7 @@ private:
 	void le(ASTNode* root);
 	void length(ASTNode* root);
 	void add(ASTNode* root);
-	void sqrt(ASTNode* root, Function& numberFunction);
+	void sqrt(ASTNode* root);
 	void sub(ASTNode* root);
 	void concat(ASTNode* root);
 	void read(ASTNode* root);
@@ -93,6 +88,10 @@ private:
 
 	std::vector<string> getArguments(std::string& code) const;
 	unsigned int countArguments(std::string& code) const;
+
+	void setErrorLogger(const ErrorType& errorType);
+	void createNumberNode(std::stack<ASTNode*>& stack, const string& code);
+	double stringToNumber(const string& number);
 
 	bool isTypeList(const FunctionType type) const;
 	bool isValidBasicFunction(const string& code) const;
