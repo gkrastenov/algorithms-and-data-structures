@@ -60,7 +60,7 @@ public:
 
 	void replaceList(const double number) { this->list = number; }	
 	void replaceList(const size_t index, const LList<double>& list);
-
+	void replaceList(const double start, const double step, const size_t count); // only used for loop list
 private:
 	void copy(const Function& other);
 };

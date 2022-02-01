@@ -54,10 +54,20 @@ public:
     bool nand();
     void concat(LList<T>& other);
 
+    void setStart(const double st) { start = st; }
+    void setStep(const double sp) { step = sp; }
+    void setIsLoop(const bool flag) { isLoop = flag; }
+    void setCount(const double count) { countLoop = count; }
+
     void print(std::multiset<T>& set) const;
 private:
     Node* head, * tail;
     size_t sz;
+
+    bool isLoop;
+    double start;
+    double step;
+    size_t countLoop;
 
     void copy(const LList& other);
     void freeHeap();
@@ -112,6 +122,11 @@ inline LList<T>::Node::Node(const T& val, Node* next)
 template<class T>
 inline void LList<T>::copy(const LList<T>& other)
 {
+    isLoop = other.isLoop;
+    start = other.start;
+    step = other.step;
+    countLoop = other.countLoop;
+
     Node dummy;
     Node* iter = &dummy;
     Node* curr = other.head;
@@ -143,7 +158,7 @@ inline void LList<T>::freeHeap()
 
 template<class T>
 inline LList<T>::LList()
-    :head(nullptr), tail(nullptr), sz(0) {}
+    :head(nullptr), tail(nullptr), sz(0), isLoop(false), start(0), step(0), countLoop(0) {}
 
 template<class T>
 inline LList<T>::LList(const std::initializer_list<T>& values)
@@ -157,8 +172,8 @@ inline LList<T>::LList(const std::initializer_list<T>& values)
 template<class T>
 inline LList<T>::LList(const LList& other)
     :LList()
-{
-    copy(other);
+{   
+     copy(other);
 }
 /*
 template<class T>
@@ -397,6 +412,29 @@ inline void LList<T>::concat(LList<T>& other)
 template<class T>
 inline void LList<T>::print(std::multiset<T>& set) const
 {
+    if (isLoop)
+    {
+        if (countLoop == 0)
+        {
+            // always print first 30 number of list
+            double curr = start;
+            for (size_t i = 0; i < 15; i++)
+            {
+                set.insert(curr);
+                curr += step;
+            }
+        }
+        else {
+            double curr = start;
+            for (size_t i = 0; i < countLoop; i++)
+            {
+                set.insert(curr);
+                curr += step;
+            }
+        }
+        return;
+    }
+
     if (sz == 0)
         return;
 

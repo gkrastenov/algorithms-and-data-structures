@@ -82,7 +82,7 @@ private:
 	void sqrt(ASTNode* root, Function& numberFunction);
 	void sub(ASTNode* root);
 	void concat(ASTNode* root);
-
+	void list(ASTNode* root, const int countOfArguments);
 
 	string buildCompileCode(const string& code, const std::vector<string>& arguments);
 	bool replace(string& str, const string& from, const string& to);

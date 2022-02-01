@@ -8,6 +8,11 @@ string Compilator::buildCompileCode(const string& code, const std::vector<string
 	int stopIndex = 0;
 	for (size_t i = 0; i < buildCode.size(); i++)
 	{
+		if (buildCode[i] == ',' || buildCode[i] == ' ')
+		{
+			continue;
+		}
+
 		if (buildCode[i] == '(')
 		{
 			if (getFunctionType(curr) == FunctionType::UNKNOWN) {
@@ -27,7 +32,10 @@ string Compilator::buildCompileCode(const string& code, const std::vector<string
 				}
 				if (replace(buildCode, curr, newCode) == false)
 					setErrorLogger(ErrorType::NOT_FOUNDED_FUNCTION); // TODO: Change error type with: cant be replaced string or something else.
-				i = stopIndex;
+
+				if (isdigit(newCode[0]) || newCode[0] == '-')
+					i = stopIndex + newCode.size();
+				else i = stopIndex - 1;
 			}
 			curr = "";
 			continue;
@@ -72,6 +80,9 @@ void Compilator::compileCode(std::istream& stream)
 		functionName.erase(std::remove_if(functionName.begin(), functionName.end(), isspace), functionName.end()); // remove all spaces
 
 		prev = pos + DELIMETAR.size();
+		while (code[prev] == ' ' && prev < code.size()) // remove spaces
+			prev++;
+
 		string functionCode = code.substr(prev);
 
 		if (getFunctionType(functionName) != FunctionType::UNKNOWN)
@@ -133,18 +144,22 @@ int Compilator::createTreeBody(const string& funCode)
 
 		if (funCode[i] == ' ' && curr != ""){		
 			if (isalnum(curr[0]) || curr[0] == '-')
-				createNumberNode(stack, curr);
-				
+				createNumberNode(stack, curr);			
 			curr = "";
 			continue;
-		}
-		else if (funCode[i] == '[') {
+
+		}else if (funCode[i] == ',' && curr != "") {
+			if (isalnum(curr[0]) || curr[0] == '-')
+				createNumberNode(stack, curr);
+			curr = "";
+			continue;
+
+		} else if (funCode[i] == '[') {
 			if (openListBracket)
 				setErrorLogger(ErrorType::SYNTAX_MISSING_LIST_RBRACE);
 
 			if (minus) 
 				setErrorLogger(ErrorType::SYNTAX_MINUS_BEFORE_LIST_LBRACE);
-
 
 			openListBracket = true;
 			Function func(ARGUMENT_LIST, FunctionType::NOT_CREATED_LIST);
@@ -237,7 +252,16 @@ ASTNode* Compilator::runTreeBody(ASTNode* astNode)
 	{
 		auto curr = runTreeBody(astNode->getChildrenNodeByIndex(i));
 		auto childFunction = curr->getFunction();
-		if (astNode->getFunction().getType() == FunctionType::CONCAT) { // concat
+
+		if (astNode->getFunction().getType() == FunctionType::LIST)
+		{
+			if(astNode->getChindrenSize() > 3 || astNode->getChindrenSize() < 0)
+				setErrorLogger(ErrorType::LIST_MISSING_ARGUMENTS);
+
+			if (i == astNode->getChindrenSize() - 1)
+				list(astNode, astNode->getChindrenSize());	
+
+		}else if (astNode->getFunction().getType() == FunctionType::CONCAT) { // concat
 			if (astNode->getChindrenSize() != 2)
 				setErrorLogger(ErrorType::CONCAT_MISSING_ARGUMENTS);
 			concat(astNode);
@@ -498,6 +522,45 @@ void Compilator::concat(ASTNode* root)
 
 }
 
+void Compilator::list(ASTNode* root, const int countOfArguments = 0)
+{
+	auto children = root->getChildrenNodes(); // vector
+
+	if (countOfArguments == 1)
+	{
+		if (isTypeList(children[0]->getFunction().getType()))
+			setErrorLogger(ErrorType::LIST_INCORRECT_ARGUMENTS);
+
+		double start = children[0]->getFunction().getList().front();
+
+		root->getFunction().replaceList(start, 1, 0);
+	}
+	else if (countOfArguments == 2)
+	{
+		if (isTypeList(children[0]->getFunction().getType())
+			|| isTypeList(children[1]->getFunction().getType()))
+			setErrorLogger(ErrorType::LIST_INCORRECT_ARGUMENTS);
+
+		double start = children[0]->getFunction().getList().front();
+		double step = children[1]->getFunction().getList().front();
+
+		root->getFunction().replaceList(start, step, 0);
+	}
+	else if (countOfArguments == 3)
+	{
+		if (isTypeList(children[0]->getFunction().getType())
+			|| isTypeList(children[1]->getFunction().getType())
+			|| isTypeList(children[2]->getFunction().getType()))
+			setErrorLogger(ErrorType::LIST_INCORRECT_ARGUMENTS);
+
+		double start = children[0]->getFunction().getList().front();
+		double step = children[1]->getFunction().getList().front();
+		double count = children[2]->getFunction().getList().front();
+
+		root->getFunction().replaceList(start, step, count);
+	}
+}
+
 std::vector<string> Compilator::getArguments(std::string& code) const
 {
 	bool foundFirstOpenBracket = false; // before first open bracket is name of funciton
@@ -511,8 +574,9 @@ std::vector<string> Compilator::getArguments(std::string& code) const
 	for (size_t i = 0; i < code.size(); i++)
 	{
 		if (code[i] == ',') {
-			arguments.push_back(curr);
-			curr = "";
+			if (curr != "")
+				arguments.push_back(curr);
+			else curr = "";
 			continue;
 		}else if (code[i] == '('){
 			if (foundFirstOpenBracket == false) {
@@ -527,8 +591,10 @@ std::vector<string> Compilator::getArguments(std::string& code) const
 		}else if (code[i] == ')')
 		{
 			curr.push_back(code[i]);
-			arguments.push_back(curr);
+			if(curr != "")
+				arguments.push_back(curr);
 			curr = "";
+			continue;
 		}							
 		
 		curr.push_back(code[i]);
@@ -592,6 +658,9 @@ FunctionType Compilator::getFunctionType(const string& funcName) const
 		return FunctionType::SUB;
 	if (funcName == "div")
 		return FunctionType::DIV;
+	if (funcName == "list")
+		return FunctionType::LIST;
+
 	return FunctionType::UNKNOWN;
 }
 

@@ -6,6 +6,65 @@
 TEST_CASE("Run built-in function")
 {
 	Compilator compilator;
+	SECTION("Run built-in function list")
+	{
+		std::stringstream startPos("start-> 3");
+		compilator.compileCode(startPos);
+		REQUIRE(compilator.output() == std::multiset<double>{0});
+
+		std::stringstream step("step-> 0.5");
+		compilator.compileCode(step);
+		REQUIRE(compilator.output() == std::multiset<double>{0});
+
+		std::stringstream listCount("count-> 10");
+		compilator.compileCode(listCount);
+		REQUIRE(compilator.output() == std::multiset<double>{0});
+
+		std::stringstream list7("list(1)");
+		compilator.compileCode(list7);
+		REQUIRE(compilator.output() == std::multiset<double>{1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11,12,13,14,15});
+
+		std::stringstream list6("list(1, 1, 10)");
+		compilator.compileCode(list6);
+		REQUIRE(compilator.output() == std::multiset<double>{1,2,3,4,5,6,7,8,9,10});
+
+		std::stringstream list5("list(5, -0.5, 3)");
+		compilator.compileCode(list5);
+		REQUIRE(compilator.output() == std::multiset<double>{5,4.5,4});
+
+		std::stringstream list4("list(start(), step(), count())");
+		compilator.compileCode(list4);
+		REQUIRE(compilator.output() == std::multiset<double>{3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5});
+
+		std::stringstream list3("list(start(), step())");
+		compilator.compileCode(list3);
+		REQUIRE(compilator.output() == std::multiset<double>{3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10});
+
+		std::stringstream list2("list(start())");
+		compilator.compileCode(list2);
+		REQUIRE(compilator.output() == std::multiset<double>{3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17});
+
+		std::stringstream list1("list(5)");
+		compilator.compileCode(list1);
+		REQUIRE(compilator.output() == std::multiset<double>{5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19});
+
+		std::stringstream error1("list(5,6,1,3)");
+		REQUIRE_THROWS(compilator.compileCode(error1));
+		REQUIRE(compilator.getErrorType() == ErrorType::LIST_MISSING_ARGUMENTS);
+
+		std::stringstream erro2("list([5])");
+		REQUIRE_THROWS(compilator.compileCode(erro2));
+		REQUIRE(compilator.getErrorType() == ErrorType::LIST_INCORRECT_ARGUMENTS);
+
+		std::stringstream error3("list([5], [3])");
+		REQUIRE_THROWS(compilator.compileCode(error3));
+		REQUIRE(compilator.getErrorType() == ErrorType::LIST_INCORRECT_ARGUMENTS);
+
+		std::stringstream error4("list([5], [3], [4])");
+		REQUIRE_THROWS(compilator.compileCode(error4));
+		REQUIRE(compilator.getErrorType() == ErrorType::LIST_INCORRECT_ARGUMENTS);
+	}
+
 	SECTION("Run built-in function int")
 	{
 		std::stringstream myInt("int(5.2)");
@@ -378,6 +437,7 @@ TEST_CASE("Run built-in function")
 
 		REQUIRE(compilator.getContainerSize() == 0);
 	}
+	
 	/*
 	SECTION("Run built-in function in: concat")
 	{

@@ -24,6 +24,10 @@ std::unordered_map<ErrorType, std::string> ErrorLogger::errorMessages =
     { ErrorType::SQRT_MISSING_ARGUMENT,    "ARGUMENT ERROR: Missing arguments for built-in function: \"sqrt\"." },
     { ErrorType::SQRT_INCORRECT_ARGUMENTS,    "ARGUMENT ERROR: Argument for built-in function \"sub\" have to be number." },
 
+    // Built-in functions
+    { ErrorType::LIST_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Missing arguments for built-in function: \"list\"." },
+    { ErrorType::LIST_INCORRECT_ARGUMENTS,    "ARGUMENT ERROR: Argument for built-in function \"list\" have to be number." },
+
     { ErrorType::DIV_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Missing arguments for built-in function: \"div\"." },
     { ErrorType::DIV_INCORRECT_ARGUMENTS,    "ARGUMENT ERROR: Argument for built-in function \"div\" have to be number." },
     { ErrorType::DIVIDE_BY_ZERO,                "ERROR: Trying to divide by zero." },
