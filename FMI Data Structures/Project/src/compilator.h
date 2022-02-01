@@ -49,14 +49,15 @@ public:
 	int getContainerSize() const { return container.size(); }
 	const ErrorType getErrorType() const { return errorLogger.getErrorType(); }
 	bool getIsCreated() const { return isCreated; }
+	bool isListCompiledFunction() const { return isTypeList(compiledFunction.getType()); }
 
 	void compileCode(std::istream& stream);
 
-	std::multiset<double> output();
+	std::vector<double> output();
 
 private:
 	void setErrorLogger(const ErrorType errorType);
-	void createNumberNode(std::stack< ASTNode*>& stack, const string& code);
+	void createNumberNode(std::stack<ASTNode*>& stack, const string& code);
 	
 	double stringToNumber(const string& number);
 

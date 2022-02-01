@@ -11,19 +11,19 @@ TEST_CASE("Funcions who contains if clause")
 
 	std::stringstream myIf3("if(eq(5, 5), list(1,1,5), sub(5,7)");
 	compilator.compileCode(myIf3);
-	REQUIRE(compilator.output() == std::multiset<double>{1,2,3,4,5});
+	REQUIRE(compilator.output() == std::vector<double>{1,2,3,4,5});
 
 	std::stringstream myIf4("if(eq(5, 4), list(1,1,5), sub(5,7)");
 	compilator.compileCode(myIf4);
-	REQUIRE(compilator.output() == std::multiset<double>{-2});
+	REQUIRE(compilator.output() == std::vector<double>{-2});
 
 	std::stringstream myIf1("if(mod(2, 2), div(300,2), div(10,2)");
 	compilator.compileCode(myIf1);
-	REQUIRE(compilator.output() == std::multiset<double>{5});
+	REQUIRE(compilator.output() == std::vector<double>{5});
 
 	std::stringstream myIf2("if(mod(1, 2), div(300,2), div(10,2)");
 	compilator.compileCode(myIf2);
-	REQUIRE(compilator.output() == std::multiset<double>{150});
+	REQUIRE(compilator.output() == std::vector<double>{150});
 
 	std::stringstream myIferror1("if(eq(5, 5), eq(5, 5), list(1,1,5), sub(5,7)");
 	REQUIRE_THROWS(compilator.compileCode(myIferror1));
@@ -47,43 +47,43 @@ TEST_CASE("Run built-in function")
 	{
 		std::stringstream startPos("start-> 3");
 		compilator.compileCode(startPos);
-		REQUIRE(compilator.output() == std::multiset<double>{0});
+		REQUIRE(compilator.output() == std::vector<double>{0});
 
 		std::stringstream step("step-> 0.5");
 		compilator.compileCode(step);
-		REQUIRE(compilator.output() == std::multiset<double>{0});
+		REQUIRE(compilator.output() == std::vector<double>{0});
 
 		std::stringstream listCount("count-> 10");
 		compilator.compileCode(listCount);
-		REQUIRE(compilator.output() == std::multiset<double>{0});
+		REQUIRE(compilator.output() == std::vector<double>{0});
 
 		std::stringstream list7("list(1)");
 		compilator.compileCode(list7);
-		REQUIRE(compilator.output() == std::multiset<double>{1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11,12,13,14,15});
+		REQUIRE(compilator.output() == std::vector<double>{1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11,12,13,14,15});
 
 		std::stringstream list6("list(1, 1, 10)");
 		compilator.compileCode(list6);
-		REQUIRE(compilator.output() == std::multiset<double>{1,2,3,4,5,6,7,8,9,10});
+		REQUIRE(compilator.output() == std::vector<double>{1,2,3,4,5,6,7,8,9,10});
 
 		std::stringstream list5("list(5, -0.5, 3)");
 		compilator.compileCode(list5);
-		REQUIRE(compilator.output() == std::multiset<double>{5,4.5,4});
+		REQUIRE(compilator.output() == std::vector<double>{5,4.5,4});
 
 		std::stringstream list4("list(start(), step(), count())");
 		compilator.compileCode(list4);
-		REQUIRE(compilator.output() == std::multiset<double>{3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5});
+		REQUIRE(compilator.output() == std::vector<double>{3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5});
 
 		std::stringstream list3("list(start(), step())");
 		compilator.compileCode(list3);
-		REQUIRE(compilator.output() == std::multiset<double>{3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10});
+		REQUIRE(compilator.output() == std::vector<double>{3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10});
 
 		std::stringstream list2("list(start())");
 		compilator.compileCode(list2);
-		REQUIRE(compilator.output() == std::multiset<double>{3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17});
+		REQUIRE(compilator.output() == std::vector<double>{3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17});
 
 		std::stringstream list1("list(5)");
 		compilator.compileCode(list1);
-		REQUIRE(compilator.output() == std::multiset<double>{5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19});
+		REQUIRE(compilator.output() == std::vector<double>{5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19});
 
 		std::stringstream error1("list(5,6,1,3)");
 		REQUIRE_THROWS(compilator.compileCode(error1));
@@ -105,23 +105,23 @@ TEST_CASE("Run built-in function")
 	{
 		std::stringstream tail1("tail([1 2 3])");
 		compilator.compileCode(tail1);
-		REQUIRE(compilator.output() == std::multiset<double>{2,3});
+		REQUIRE(compilator.output() == std::vector<double>{2,3});
 
 		std::stringstream tail2("tail([3])");
 		compilator.compileCode(tail2);
-		REQUIRE(compilator.output() == std::multiset<double>{});
+		REQUIRE(compilator.output() == std::vector<double>{});
 
 		std::stringstream tail3("tail([])");
 		compilator.compileCode(tail3);
-		REQUIRE(compilator.output() == std::multiset<double>{});
+		REQUIRE(compilator.output() == std::vector<double>{});
 
 		std::stringstream tail4("tail(list(5, -0.5, 3))");
 		compilator.compileCode(tail4);
-		REQUIRE(compilator.output() == std::multiset<double>{4.5, 4});
+		REQUIRE(compilator.output() == std::vector<double>{4.5, 4});
 
 		std::stringstream tail5("tail(list(5, -0.5, 1))");
 		compilator.compileCode(tail5);
-		REQUIRE(compilator.output() == std::multiset<double>{});
+		REQUIRE(compilator.output() == std::vector<double>{});
 
 		std::stringstream tailError1("tail(5)");
 		REQUIRE_THROWS(compilator.compileCode(tailError1));
@@ -137,7 +137,7 @@ TEST_CASE("Run built-in function")
 
 		std::stringstream tail6("tail(list(1))");
 		compilator.compileCode(tail6);
-		REQUIRE(compilator.output() == std::multiset<double>{2,3,4,5,6,7,8,9,10,11,12,13,14,15,16});
+		REQUIRE(compilator.output() == std::vector<double>{2,3,4,5,6,7,8,9,10,11,12,13,14,15,16});
 
 		REQUIRE(compilator.getContainerSize() == 0);
 	}
@@ -145,11 +145,11 @@ TEST_CASE("Run built-in function")
 	{
 		std::stringstream head1("head([1 2 3])");
 		compilator.compileCode(head1);
-		REQUIRE(compilator.output() == std::multiset<double>{1});
+		REQUIRE(compilator.output() == std::vector<double>{1});
 
 		std::stringstream head2("head([3])");
 		compilator.compileCode(head2);
-		REQUIRE(compilator.output() == std::multiset<double>{3});
+		REQUIRE(compilator.output() == std::vector<double>{3});
 
 		std::stringstream headError1("head(5)");
 		REQUIRE_THROWS(compilator.compileCode(headError1));
@@ -169,7 +169,7 @@ TEST_CASE("Run built-in function")
 
 		std::stringstream head3("head(list(1))");
 		compilator.compileCode(head3);
-		REQUIRE(compilator.output() == std::multiset<double>{1});
+		REQUIRE(compilator.output() == std::vector<double>{1});
 
 		REQUIRE(compilator.getContainerSize() == 0);
 	}
@@ -178,7 +178,7 @@ TEST_CASE("Run built-in function")
 		std::stringstream int1("int(5.2)");
     	compilator.compileCode(int1);
 		REQUIRE(!compilator.getIsCreated());
-		REQUIRE(compilator.output() == std::multiset<double>{5});
+		REQUIRE(compilator.output() == std::vector<double>{5});
 
 		std::stringstream intError1("int(5.2, 5)");
 		REQUIRE_THROWS(compilator.compileCode(intError1));
@@ -195,8 +195,8 @@ TEST_CASE("Run built-in function")
 	}
 	SECTION("Run built-in function eq")
 	{
-		std::multiset<double> isTrue{1};
-		std::multiset<double> isFalse{0};
+		std::vector<double> isTrue{1};
+		std::vector<double> isFalse{0};
 
 		std::stringstream myErrEq1("eq(5)");
 		REQUIRE_THROWS(compilator.compileCode(myErrEq1));
@@ -255,8 +255,8 @@ TEST_CASE("Run built-in function")
 	}
 	SECTION("Run built-in function le")
 	{
-		std::multiset<double> isTrue{ 1 };
-		std::multiset<double> isFalse{ 0 };
+		std::vector<double> isTrue{ 1 };
+		std::vector<double> isFalse{ 0 };
 
 		std::stringstream myErrLe1("le(5)");
 		REQUIRE_THROWS(compilator.compileCode(myErrLe1));
@@ -328,12 +328,12 @@ TEST_CASE("Run built-in function")
 		std::stringstream myMod1("mod(5 2)");
 		compilator.compileCode(myMod1);
 		REQUIRE(!compilator.getIsCreated());
-		REQUIRE(compilator.output() == std::multiset<double>{1});
+		REQUIRE(compilator.output() == std::vector<double>{1});
 
 		std::stringstream myMod2("mod(-60 2)");
 		compilator.compileCode(myMod2);
 		REQUIRE(!compilator.getIsCreated());
-		REQUIRE(compilator.output() == std::multiset<double>{0});
+		REQUIRE(compilator.output() == std::vector<double>{0});
 
 		std::stringstream myErrorMod1("mod(5)");
 		REQUIRE_THROWS(compilator.compileCode(myErrorMod1));
@@ -367,8 +367,8 @@ TEST_CASE("Run built-in function")
 	}
 	SECTION("Run built-in function nand") 
 	{
-		std::multiset<double> isTrue  {1};
-		std::multiset<double> isFalse {0};
+		std::vector<double> isTrue  {1};
+		std::vector<double> isFalse {0};
 
 		std::stringstream myNand1("nand(5)");
 		REQUIRE_THROWS(compilator.compileCode(myNand1));
@@ -415,7 +415,7 @@ TEST_CASE("Run built-in function")
 		std::stringstream mySqrt1("sqrt(25)");
 		compilator.compileCode(mySqrt1);
 		REQUIRE(!compilator.getIsCreated());
-		REQUIRE(compilator.output() == std::multiset<double>{5});
+		REQUIRE(compilator.output() == std::vector<double>{5});
 
 		std::stringstream mySqrt2("sqrt(25, 30)");
 		REQUIRE_THROWS(compilator.compileCode(mySqrt2));
@@ -432,7 +432,7 @@ TEST_CASE("Run built-in function")
 		std::stringstream mySqrt5("sqrt(9)");
 		compilator.compileCode(mySqrt5);
 		REQUIRE(!compilator.getIsCreated());
-		REQUIRE(compilator.output() == std::multiset<double>{3});
+		REQUIRE(compilator.output() == std::vector<double>{3});
 
 		REQUIRE(compilator.getContainerSize() == 0);
 	}
@@ -441,12 +441,12 @@ TEST_CASE("Run built-in function")
 		std::stringstream myAdd1("add(25, 25)");
 		compilator.compileCode(myAdd1);
 		REQUIRE(!compilator.getIsCreated());
-		REQUIRE(compilator.output() == std::multiset<double>{50});
+		REQUIRE(compilator.output() == std::vector<double>{50});
 
 		std::stringstream myAdd2("add(0, 0)");
 		compilator.compileCode(myAdd2);
 		REQUIRE(!compilator.getIsCreated());
-		REQUIRE(compilator.output() == std::multiset<double>{0});
+		REQUIRE(compilator.output() == std::vector<double>{0});
 
 		std::stringstream myAdd3("add([])");
 		REQUIRE_THROWS(compilator.compileCode(myAdd3));
@@ -463,7 +463,7 @@ TEST_CASE("Run built-in function")
 		std::stringstream myAdd6("add(25, -25)");
 		compilator.compileCode(myAdd6);
 		REQUIRE(!compilator.getIsCreated());
-		REQUIRE(compilator.output() == std::multiset<double>{0});
+		REQUIRE(compilator.output() == std::vector<double>{0});
 
 		std::stringstream myAdd7("add([3], [1])");
 		REQUIRE_THROWS(compilator.compileCode(myAdd7));
@@ -476,17 +476,17 @@ TEST_CASE("Run built-in function")
 		std::stringstream mySub1("sub(25, 25)");
 		compilator.compileCode(mySub1);
 		REQUIRE(!compilator.getIsCreated());
-		REQUIRE(compilator.output() == std::multiset<double>{0});
+		REQUIRE(compilator.output() == std::vector<double>{0});
 
 		std::stringstream mySub2("sub(25, -25)");
 		compilator.compileCode(mySub2);
 		REQUIRE(!compilator.getIsCreated());
-		REQUIRE(compilator.output() == std::multiset<double>{50});
+		REQUIRE(compilator.output() == std::vector<double>{50});
 
 		std::stringstream mySub3("sub(1, 25)");
 		compilator.compileCode(mySub3);
 		REQUIRE(!compilator.getIsCreated());
-		REQUIRE(compilator.output() == std::multiset<double>{-24});
+		REQUIRE(compilator.output() == std::vector<double>{-24});
 
 		std::stringstream mySub5("sub(5)");
 		REQUIRE_THROWS(compilator.compileCode(mySub5));
@@ -511,17 +511,17 @@ TEST_CASE("Run built-in function")
 		std::stringstream myDiv1("div(5 2)");
 		compilator.compileCode(myDiv1);
 		REQUIRE(!compilator.getIsCreated());
-		REQUIRE(compilator.output() == std::multiset<double>{2.5});
+		REQUIRE(compilator.output() == std::vector<double>{2.5});
 
 		std::stringstream myDiv2("div(0 2)");
 		compilator.compileCode(myDiv2);
 		REQUIRE(!compilator.getIsCreated());
-		REQUIRE(compilator.output() == std::multiset<double>{0});
+		REQUIRE(compilator.output() == std::vector<double>{0});
 
 		std::stringstream myDiv3("div(-40 2)");
 		compilator.compileCode(myDiv3);
 		REQUIRE(!compilator.getIsCreated());
-		REQUIRE(compilator.output() == std::multiset<double>{-20});
+		REQUIRE(compilator.output() == std::vector<double>{-20});
 
 		std::stringstream myDivError1("div(5)");
 		REQUIRE_THROWS(compilator.compileCode(myDivError1));
@@ -555,27 +555,27 @@ TEST_CASE("Run built-in function")
 		std::stringstream myConcat1("concat([], [])");
 		compilator.compileCode(myConcat1);
 		REQUIRE(!compilator.getIsCreated());
-		REQUIRE(compilator.output() == std::multiset<double>());
+		REQUIRE(compilator.output() == std::vector<double>());
 
 		std::stringstream myConcat2("concat([1], [1])");
 		compilator.compileCode(myConcat2);
 		REQUIRE(!compilator.getIsCreated());
-		REQUIRE(compilator.output() == std::multiset<double>{1, 1});
+		REQUIRE(compilator.output() == std::vector<double>{1, 1});
 
 		std::stringstream myConcat3("concat([1], [])");
 		compilator.compileCode(myConcat3);
 		REQUIRE(!compilator.getIsCreated());
-		REQUIRE(compilator.output() == std::multiset<double>{1});
+		REQUIRE(compilator.output() == std::vector<double>{1});
 
 		std::stringstream myConcat4("concat([1 2], [3 4])");
 		compilator.compileCode(myConcat4);
 		REQUIRE(!compilator.getIsCreated());
-		REQUIRE(compilator.output() == std::multiset<double>{1, 2, 3, 4});
+		REQUIRE(compilator.output() == std::vector<double>{1, 2, 3, 4});
 
 		std::stringstream myConcat5("concat(list(-3,1,3), list(0,1,3))");
 		compilator.compileCode(myConcat5);
 		REQUIRE(!compilator.getIsCreated());
-		REQUIRE(compilator.output() == std::multiset<double>{-3,-2,-1,0,1,2});
+		REQUIRE(compilator.output() == std::vector<double>{-3,-2,-1,0,1,2});
 
 		std::stringstream myConcatError1("concat(5, 6)");
 		REQUIRE_THROWS(compilator.compileCode(myConcatError1));
@@ -612,12 +612,12 @@ TEST_CASE("Run built-in function")
 		std::stringstream len1("length([])");
 		compilator.compileCode(len1);
 		REQUIRE(!compilator.getIsCreated());
-		REQUIRE(compilator.output() == std::multiset<double> {0});
+		REQUIRE(compilator.output() == std::vector<double> {0});
 
 		std::stringstream len2("length([1 2 3 4 5])");
 		compilator.compileCode(len2);
 		REQUIRE(!compilator.getIsCreated());
-		REQUIRE(compilator.output() == std::multiset<double>{5});
+		REQUIRE(compilator.output() == std::vector<double>{5});
 
 		std::stringstream lenErro1("length(list(1))");
 		REQUIRE_THROWS(compilator.compileCode(lenErro1));
@@ -631,7 +631,7 @@ TEST_CASE("Run built-in function")
 		std::stringstream len3("length(list(1, 1, 5))");
 		compilator.compileCode(len3);
 		REQUIRE(!compilator.getIsCreated());
-		REQUIRE(compilator.output() == std::multiset<double> {5});
+		REQUIRE(compilator.output() == std::vector<double> {5});
 
 		std::stringstream lenErro3("length(5, 6)");
 		REQUIRE_THROWS(compilator.compileCode(lenErro3));
@@ -640,7 +640,7 @@ TEST_CASE("Run built-in function")
 		std::stringstream lenErro4("length(5)");
 		compilator.compileCode(lenErro4);
 		REQUIRE(!compilator.getIsCreated());
-		REQUIRE(compilator.output() == std::multiset<double> {-1});
+		REQUIRE(compilator.output() == std::vector<double> {-1});
 
 		std::stringstream lenErro5("length([5], [6])");
 		REQUIRE_THROWS(compilator.compileCode(lenErro5));
@@ -653,7 +653,7 @@ TEST_CASE("Run built-in function")
 TEST_CASE("Compile complex funcitons")
 {
 	Compilator compilator;
-	std::multiset<double> isCreated{ 0 };
+	std::vector<double> isCreated{ 0 };
 	SECTION("Compile complex functions")
 	{
 		std::stringstream myEvenList("myEvenList ->[10 5 3 7]");
@@ -666,7 +666,7 @@ TEST_CASE("Compile complex funcitons")
 		compilator.compileCode(tailMyEvenList);
 		REQUIRE(!compilator.getIsCreated());
 		REQUIRE(compilator.getContainerSize() == 1);
-		REQUIRE(compilator.output() == std::multiset<double>{5,3,7});
+		REQUIRE(compilator.output() == std::vector<double>{5,3,7});
 
 		std::stringstream isOdd("isOdd -> eq(mod(int(#0), 2), 1)");
 		compilator.compileCode(isOdd);
@@ -678,7 +678,7 @@ TEST_CASE("Compile complex funcitons")
 		compilator.compileCode(isOddCall1);
 		REQUIRE(!compilator.getIsCreated());
 		REQUIRE(compilator.getContainerSize() == 2);
-		REQUIRE(compilator.output() == std::multiset<double>{1});
+		REQUIRE(compilator.output() == std::vector<double>{1});
 
 		std::stringstream myNumber("myNumber -> 5");
 		compilator.compileCode(myNumber);
@@ -690,20 +690,20 @@ TEST_CASE("Compile complex funcitons")
 		compilator.compileCode(isOddCallNumber);
 		REQUIRE(!compilator.getIsCreated());
 		REQUIRE(compilator.getContainerSize() == 3);
-		REQUIRE(compilator.output() == std::multiset<double>{1});
+		REQUIRE(compilator.output() == std::vector<double>{1});
 
 		std::stringstream myList("myList1 -> [3 4 5 7 9 10]");
 		compilator.compileCode(myList);
 		REQUIRE(compilator.getIsCreated());
 		REQUIRE(compilator.getContainerSize() == 4);
-		std::multiset<double> expected1{ 0 };
+		std::vector<double> expected1{ 0 };
 		REQUIRE(compilator.output() == expected1);
 
 		std::stringstream head("head(myList1())");
 		compilator.compileCode(head);
 		REQUIRE(!compilator.getIsCreated());
 		REQUIRE(compilator.getContainerSize() == 4);
-		std::multiset<double> expected2{ 3 };
+		std::vector<double> expected2{ 3 };
 		REQUIRE(compilator.output() == expected2);
 
 		std::stringstream isEven("isEven -> nand(isOdd(#0), 1)");
@@ -716,39 +716,39 @@ TEST_CASE("Compile complex funcitons")
 		compilator.compileCode(isEvenExampleWithNumber);
 		REQUIRE(!compilator.getIsCreated());
 		REQUIRE(compilator.getContainerSize() == 5);
-		REQUIRE(compilator.output() == std::multiset<double> {0});
+		REQUIRE(compilator.output() == std::vector<double> {0});
 
 		std::stringstream isOddCall2("isOdd(50)");
 		compilator.compileCode(isOddCall2);
 		REQUIRE(!compilator.getIsCreated());
 		REQUIRE(compilator.getContainerSize() == 5);
-		REQUIRE(compilator.output() == std::multiset<double>{0});
+		REQUIRE(compilator.output() == std::vector<double>{0});
 
 		std::stringstream isEven2("isEven(12)");
 		compilator.compileCode(isEven2);
 		REQUIRE(!compilator.getIsCreated());
 		REQUIRE(compilator.getContainerSize() == 5);
-		REQUIRE(compilator.output() == std::multiset<double> {1});
+		REQUIRE(compilator.output() == std::vector<double> {1});
 
 
 		std::stringstream divsors("divisors->concat([2], list(3, 2, add(1, int(sqrt(#0))))");
 		compilator.compileCode(divsors);
 		REQUIRE(compilator.getIsCreated());
 		REQUIRE(compilator.getContainerSize() == 6);
-		REQUIRE(compilator.output() == std::multiset<double> {0});
+		REQUIRE(compilator.output() == std::vector<double> {0});
 
 		std::stringstream divsorsCall("divisors(4)");
 		compilator.compileCode(divsorsCall);
 		REQUIRE(!compilator.getIsCreated());
 		REQUIRE(compilator.getContainerSize() == 6);
-		REQUIRE(compilator.output() == std::multiset<double> {2,3,5,7});
+		REQUIRE(compilator.output() == std::vector<double> {2,3,5,7});
 	}
 }
 
 TEST_CASE("Run already created function")
 {
 	Compilator compilator;
-	std::multiset<double> isCreated{0};
+	std::vector<double> isCreated{0};
 
 	SECTION("Run and print already created basic function")
 	{
@@ -760,7 +760,7 @@ TEST_CASE("Run already created function")
 		std::stringstream myListPrint1("myList()");
 		compilator.compileCode(myListPrint1);
 		REQUIRE(!compilator.getIsCreated());
-		std::multiset<double> expected1{ 3,4,5,7,9,10 };
+		std::vector<double> expected1{ 3,4,5,7,9,10 };
 		REQUIRE(compilator.output() == expected1);
 
 		std::stringstream myList1("myList1 -> -10");
@@ -770,7 +770,7 @@ TEST_CASE("Run already created function")
 		std::stringstream myListPrint2("myList1()");
 		compilator.compileCode(myListPrint2);
 		REQUIRE(!compilator.getIsCreated());
-		std::multiset<double> expected2{ -10 };
+		std::vector<double> expected2{ -10 };
 		REQUIRE(compilator.output() == expected2);
 
 
@@ -783,7 +783,7 @@ TEST_CASE("Run already created function")
 		std::stringstream myListPrint3("myList2()");
 		compilator.compileCode(myListPrint3);
 		REQUIRE(!compilator.getIsCreated());
-		std::multiset<double> expected3{ 10 };
+		std::vector<double> expected3{ 10 };
 		REQUIRE(compilator.output() == expected3);
 		REQUIRE(compilator.getContainerSize() == 3);
 	}
@@ -843,22 +843,15 @@ TEST_CASE("Built-In functions must not be modified")
 		REQUIRE(compilator.getErrorType() == ErrorType::WRONG_USE_OPERATION_MODIFIED_BUILT_IN_FUNCTION);
 	}
 }
-/*
-TEST_CASE("Run built-in function")
-{
-	Compilator compilator;
-	REQUIRE(compilator.compile_code("list(1, 1, 10)") == "[1 2 3 4 5 6 7 8 9 10]");
 
-}
-*/
 
 TEST_CASE("Create and save function")
 {
 	Compilator compilator;
 	SECTION("Create basic function and save it")
 	{
-		std::multiset<double> isCreated{ 0 };
-		std::multiset<double> isEdited{ 1 };
+		std::vector<double> isCreated{ 0 };
+		std::vector<double> isEdited{ 1 };
 
 		std::stringstream list1Created("myList1 -> [3 4 5 7 9 10]");
 		compilator.compileCode(list1Created);
@@ -950,19 +943,19 @@ TEST_CASE("Create and save function")
 
 		std::stringstream validCode1("56");
 		compilator.compileCode(validCode1);
-		REQUIRE(compilator.output() == std::multiset<double>{56});
+		REQUIRE(compilator.output() == std::vector<double>{56});
 
 		std::stringstream validCode2("[1 2 3 4]");
 		compilator.compileCode(validCode2);
-		REQUIRE(compilator.output() == std::multiset<double>{1,2,3,4});
+		REQUIRE(compilator.output() == std::vector<double>{1,2,3,4});
 
 		std::stringstream validCode3("[]");
 		compilator.compileCode(validCode3);
-		REQUIRE(compilator.output() == std::multiset<double>{});
+		REQUIRE(compilator.output() == std::vector<double>{});
 
 		std::stringstream validCode4("[1]");
 		compilator.compileCode(validCode4);
-		REQUIRE(compilator.output() == std::multiset<double>{1});
+		REQUIRE(compilator.output() == std::vector<double>{1});
 		REQUIRE(compilator.getContainerSize() == 0);
 	}
 }

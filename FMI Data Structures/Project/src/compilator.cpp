@@ -837,15 +837,15 @@ bool Compilator::isBasicFunction(const string& code) const
 	return foundCallOpen == string::npos && foundCallClosed == string::npos;
 }
 
-std::multiset<double> Compilator::output() 
+std::vector<double> Compilator::output()
 {
 	if (canBePrinted == false){
 		if(isCreated)
-			return std::multiset<double> {0};
-		return std::multiset<double> {1};
+			return std::vector<double> {0};
+		return std::vector<double> {1};
 	}
 
-	std::multiset<double> multiset;
-	compiledFunction.getList().print(multiset);
-	return multiset;
+	std::vector<double> vec;
+	compiledFunction.getList().print(vec);
+	return vec;
 }

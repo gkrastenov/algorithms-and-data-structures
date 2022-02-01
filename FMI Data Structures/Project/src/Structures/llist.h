@@ -4,7 +4,7 @@
 #include <cassert>
 #include <string>
 #include <initializer_list>
-#include <set>
+#include <vector>
 
 template <class T= double>
 class LList
@@ -64,7 +64,7 @@ public:
     void setIsLoop(const bool flag) { isLoop = flag; }
     void setCount(const double count) { countLoop = count; }
 
-    void print(std::multiset<T>& set) const;
+    void print(std::vector<T>& set) const;
 private:
     Node* head, * tail;
     size_t sz;
@@ -485,17 +485,17 @@ inline void LList<T>::concat(LList<T>& other)
 }
 
 template<class T>
-inline void LList<T>::print(std::multiset<T>& set) const
+inline void LList<T>::print(std::vector<T>& vec) const
 {
     if (isLoop)
     {
         if (countLoop == 0)
         {
-            // always print first 30 number of list
+            // always print first 15 number of list
             double curr = start;
             for (size_t i = 0; i < 15; i++)
             {
-                set.insert(curr);
+                vec.push_back(curr);
                 curr += step;
             }
         }
@@ -503,7 +503,7 @@ inline void LList<T>::print(std::multiset<T>& set) const
             double curr = start;
             for (size_t i = 0; i < countLoop; i++)
             {
-                set.insert(curr);
+                vec.push_back(curr);
                 curr += step;
             }
         }
@@ -516,7 +516,7 @@ inline void LList<T>::print(std::multiset<T>& set) const
     Node* temp = head;
     while (temp)
     {
-        set.insert(temp->data);
+        vec.push_back(temp->data);
         temp = temp->next;
     }
 }
