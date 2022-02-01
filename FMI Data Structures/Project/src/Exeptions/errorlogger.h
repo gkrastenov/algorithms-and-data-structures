@@ -172,10 +172,6 @@ private:
             { ErrorType::MOD_WORK_ONLY_WITH_INTEGERS,    "ARGUMENT ERROR: Mod work only with integers." },
             // Function
             { ErrorType::NOT_FOUNDED_FUNCTION,                   "FUNCTION ERROR: Not founded function." },
-
-            // File
-            { ErrorType::WRONG_FILE_TYPE,               "FILE ERROR: Wrong file type" },
-            { ErrorType::ERROR_OPENING_FILE,            "FILE ERROR: Problem opening the specified file" },
         };
     ErrorType errorType;
 public:
