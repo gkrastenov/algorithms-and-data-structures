@@ -3,6 +3,21 @@
 
 #include "interface.h"
 #include "compilator.h"
+
+
+TEST_CASE("Funcions who contains if clause")
+{
+	Compilator compilator;
+
+	std::stringstream myIf1("if(mod(2, 2), div(300,2), div(10,2)");
+	compilator.compileCode(myIf1);
+	REQUIRE(compilator.output() == std::multiset<double>{5});
+
+	std::stringstream myIf2("if(mod(1, 2), div(300,2), div(10,2)");
+	compilator.compileCode(myIf2);
+	REQUIRE(compilator.output() == std::multiset<double>{150});
+}
+
 TEST_CASE("Run built-in function")
 {
 	Compilator compilator;
@@ -436,8 +451,7 @@ TEST_CASE("Run built-in function")
 		REQUIRE(compilator.getErrorType() == ErrorType::DIVIDE_BY_ZERO);
 
 		REQUIRE(compilator.getContainerSize() == 0);
-	}
-	
+	}	
 	/*
 	SECTION("Run built-in function in: concat")
 	{

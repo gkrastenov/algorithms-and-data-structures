@@ -10,6 +10,7 @@ string Compilator::buildCompileCode(const string& code, const std::vector<string
 	{
 		if (buildCode[i] == ',' || buildCode[i] == ' ')
 		{
+			curr = "";
 			continue;
 		}
 
@@ -115,7 +116,6 @@ void Compilator::compileCode(std::istream& stream)
 		}
 	}
 }
-
 
 int Compilator::createTreeBody(const string& funCode)
 {
@@ -244,6 +244,31 @@ ASTNode* Compilator::runTreeBody(ASTNode* astNode)
 	{
 		return nullptr;
 	}
+
+	if (astNode->getFunction().getType() == FunctionType::IF)
+	{
+		if(astNode->getChindrenSize() != 3)
+			setErrorLogger(ErrorType::IF_MISSING_ARGUMENTS);
+
+		auto children = astNode->getChildrenNodes(); // vector
+
+		ASTNode* condition = runTreeBody(children[0]);
+		if (condition->getFunction().getList().front() == 1) // true
+		{
+			ASTNode* ifTrue = runTreeBody(children[1]);
+			if (isTypeList(ifTrue->getFunction().getType()))		
+				astNode->getFunction().replaceList(0, ifTrue->getFunction().getList());
+			else astNode->getFunction().replaceList(ifTrue->getFunction().getList().front());
+		}
+		else {
+			ASTNode* ifFalse = runTreeBody(children[2]);
+			if (isTypeList(ifFalse->getFunction().getType()))
+				astNode->getFunction().replaceList(0, ifFalse->getFunction().getList());
+			else astNode->getFunction().replaceList(ifFalse->getFunction().getList().front());
+		}
+
+	}
+
 	if (astNode->getChindrenSize() == 0)
 	{
 		return astNode;
