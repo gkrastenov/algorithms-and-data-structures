@@ -46,10 +46,12 @@ std::unordered_map<ErrorType, std::string> ErrorLogger::errorMessages =
     { ErrorType::TAIL_NOT_MATCHING_CORRECT_ARGUMENT,    "ARGUMENT ERROR: not matching correct argument for built-in function: \"tail\"." },
 
     { ErrorType::LENGTH_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Missing arguments for built-in function: \"length\"." },
-   
+    { ErrorType::LENGTH_INCORRECT_ARGUMENTS,    "ARGUMENT ERROR: Arguments for built-in function \"length\" have to be list." },
+    { ErrorType::LENGTH_LOOP_LIST_ARGUMENT,    "ARGUMENT ERROR: Arguments for built-in function \"length\" is loop list." },
+
     { ErrorType::CONCAT_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Missing arguments for built-in function: \"concat\"." },
     { ErrorType::CONCAT_INCORRECT_ARGUMENTS,    "ARGUMENT ERROR: Arguments for built-in function \"concat\" have to be list." },
-    { ErrorType::CONCAT_LOOP_LIST,    "ARGUMENT ERROR: Can not be cocnat if first argument is loop list." },
+    { ErrorType::CONCAT_LOOP_LIST,    "ARGUMENT ERROR: Can not be concat if first argument is loop list." },
 
     { ErrorType::SUB_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Missing arguments for built-in function: \"sub\"." },
     { ErrorType::SUB_INCORRECT_ARGUMENTS,    "ARGUMENT ERROR: Arguments for built-in function \"sub\" have to be numbers." },
@@ -66,6 +68,8 @@ std::unordered_map<ErrorType, std::string> ErrorLogger::errorMessages =
     { ErrorType::MOD_INCORRECT_ARGUMENTS,    "ARGUMENT ERROR: Argument for built-in function \"mod\" have to be number." },
 
     { ErrorType::WRITE_MISSING_ARGUMENTS,    "ARGUMENT ERROR: Missing arguments for built-in function: \"write\"." },
+    { ErrorType::WRITE_INCORRECT_ARGUMENTS,    "ARGUMENT ERROR: Argument for built-in function \"write\" have to be number." },
+
     { ErrorType::MOD_WORK_ONLY_WITH_INTEGERS,    "ARGUMENT ERROR: Mod work only with integers." },
 
     // Function

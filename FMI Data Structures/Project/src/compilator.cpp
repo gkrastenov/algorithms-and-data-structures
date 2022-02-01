@@ -377,6 +377,12 @@ ASTNode* Compilator::runTreeBody(ASTNode* astNode)
 			if (i == 1)
 				div(astNode);
 
+		}else if (astNode->getFunction().getType() == FunctionType::LENGTH) { // length
+			if (astNode->getChindrenSize() != 1)
+				setErrorLogger(ErrorType::LENGTH_MISSING_ARGUMENTS);
+
+			length(astNode);
+
 		}else if (astNode->getFunction().getType() == FunctionType::INT) { // int
 			if (astNode->getChindrenSize() != 1)
 				setErrorLogger(ErrorType::INT_MISSING_ARGUMENTS);
@@ -493,6 +499,30 @@ void Compilator::le(ASTNode* root)
 	auto children = root->getChildrenNodes(); // vector
 	int result = children[0]->getFunction().getList().leCompare(children[1]->getFunction().getList());
 	root->getFunction().replaceList(result);
+}
+
+void Compilator::length(ASTNode* root)
+{
+	auto children = root->getChildrenNodes(); //vector;
+
+	if (isTypeList(children[0]->getFunction().getType()) == false)
+	{
+		root->getFunction().replaceList(-1);
+		return;
+	}
+	else {
+		if (children[0]->getFunction().getList().getIsLoop())
+		{
+			auto count = children[0]->getFunction().getList().getCount();
+			if(count == 0)
+				setErrorLogger(ErrorType::LENGTH_LOOP_LIST_ARGUMENT);
+			root->getFunction().replaceList(count);
+		}
+		else {
+			auto size = children[0]->getFunction().getList().size();
+			root->getFunction().replaceList(size);
+		}
+	}
 }
 
 void Compilator::add(ASTNode* root)

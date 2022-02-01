@@ -77,11 +77,13 @@ private:
 	void div(ASTNode* root);
 	void eq(ASTNode* root);
 	void le(ASTNode* root);
+	void length(ASTNode* root);
 	void add(ASTNode* root);
 	void sqrt(ASTNode* root, Function& numberFunction);
 	void sub(ASTNode* root);
 	void concat(ASTNode* root);
 	void list(ASTNode* root, const int countOfArguments);
+	//void write(ASTNode* root);
 
 	string buildCompileCode(const string& code, const std::vector<string>& arguments);
 	bool replace(string& str, const string& from, const string& to);

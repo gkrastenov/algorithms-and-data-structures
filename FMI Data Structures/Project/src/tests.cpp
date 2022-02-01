@@ -607,6 +607,47 @@ TEST_CASE("Run built-in function")
 
 		REQUIRE(compilator.getContainerSize() == 0);
 	}	
+	SECTION("Run built-in function in: length")
+	{
+		std::stringstream len1("length([])");
+		compilator.compileCode(len1);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == std::multiset<double> {0});
+
+		std::stringstream len2("length([1 2 3 4 5])");
+		compilator.compileCode(len2);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == std::multiset<double>{5});
+
+		std::stringstream lenErro1("length(list(1))");
+		REQUIRE_THROWS(compilator.compileCode(lenErro1));
+		REQUIRE(compilator.getErrorType() == ErrorType::LENGTH_LOOP_LIST_ARGUMENT);
+
+		std::stringstream lenErro2("length(list(1, 1))");
+		REQUIRE_THROWS(compilator.compileCode(lenErro2));
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.getErrorType() == ErrorType::LENGTH_LOOP_LIST_ARGUMENT);
+
+		std::stringstream len3("length(list(1, 1, 5))");
+		compilator.compileCode(len3);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == std::multiset<double> {5});
+
+		std::stringstream lenErro3("length(5, 6)");
+		REQUIRE_THROWS(compilator.compileCode(lenErro3));
+		REQUIRE(compilator.getErrorType() == ErrorType::LENGTH_MISSING_ARGUMENTS);
+
+		std::stringstream lenErro4("length(5)");
+		compilator.compileCode(lenErro4);
+		REQUIRE(!compilator.getIsCreated());
+		REQUIRE(compilator.output() == std::multiset<double> {-1});
+
+		std::stringstream lenErro5("length([5], [6])");
+		REQUIRE_THROWS(compilator.compileCode(lenErro5));
+		REQUIRE(compilator.getErrorType() == ErrorType::LENGTH_MISSING_ARGUMENTS);
+
+		REQUIRE(compilator.getContainerSize() == 0);
+	}
 }
 
 TEST_CASE("Compile complex funcitons")
