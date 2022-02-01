@@ -245,7 +245,7 @@ ASTNode* Compilator::runTreeBody(ASTNode* astNode)
 		return nullptr;
 	}
 
-	if (astNode->getFunction().getType() == FunctionType::IF)
+	if (astNode->getFunction().getType() == FunctionType::IF) // if
 	{
 		if(astNode->getChindrenSize() != 3)
 			setErrorLogger(ErrorType::IF_MISSING_ARGUMENTS);
@@ -269,12 +269,55 @@ ASTNode* Compilator::runTreeBody(ASTNode* astNode)
 			return astNode;
 		}
 
-	}
-
-	if (astNode->getChindrenSize() == 0)
+	}else if (astNode->getFunction().getType() == FunctionType::NAND)
 	{
+		if (astNode->getChindrenSize() != 2)
+			setErrorLogger(ErrorType::NAND_MISSING_ARGUMENTS);
+
+		auto children = astNode->getChildrenNodes(); // vector
+
+		// first argument
+		ASTNode* first = runTreeBody(children[0]);
+		bool firstIsNand;
+		if (isTypeList(first->getFunction().getType()))
+		{
+			firstIsNand = first->getFunction().getList().nand();
+		}
+		else {
+			if (first->getFunction().getList().size() == 0)
+				firstIsNand = false;
+			else firstIsNand = first->getFunction().getList().front() != 0;
+		}
+
+		if (!firstIsNand) 
+		{
+			astNode->getFunction().replaceList(true);
+			return astNode;
+		}
+
+		// second argument
+		ASTNode* second = runTreeBody(children[1]);	
+		bool secondIsNand;
+		if (isTypeList(second->getFunction().getType()))
+		{
+			secondIsNand = second->getFunction().getList().nand();
+		}
+		else {
+			if (second->getFunction().getList().size() == 0)
+				secondIsNand = false;
+			else secondIsNand = children[1]->getFunction().getList().front() != 0;
+		}
+
+		if (firstIsNand && secondIsNand)
+			astNode->getFunction().replaceList(false);
+	   else astNode->getFunction().replaceList(true);
+
 		return astNode;
 	}
+
+	if (astNode->getChindrenSize() == 0)	
+		return astNode;
+	
 	for (size_t i = 0; i < astNode->getChindrenSize(); i++)
 	{
 		auto curr = runTreeBody(astNode->getChildrenNodeByIndex(i));
@@ -311,14 +354,7 @@ ASTNode* Compilator::runTreeBody(ASTNode* astNode)
 			if (i == 1) 
 				sub(astNode);
 
-		}else if (astNode->getFunction().getType() == FunctionType::NAND) { // nand
-			if (astNode->getChindrenSize() != 2)
-				setErrorLogger(ErrorType::NAND_MISSING_ARGUMENTS);
-			if (i == 1) 
-				nand(astNode);
-
-		}
-		else if (astNode->getFunction().getType() == FunctionType::EQ) { // eq
+		} else if (astNode->getFunction().getType() == FunctionType::EQ) { // eq
 			if (astNode->getChindrenSize() != 2)
 				setErrorLogger(ErrorType::EQ_MISSING_ARGUMENTS);
 			if (i == 1)
@@ -454,37 +490,6 @@ void Compilator::le(ASTNode* root)
 {
 	auto children = root->getChildrenNodes(); // vector
 	int result = children[0]->getFunction().getList().leCompare(children[1]->getFunction().getList());
-	root->getFunction().replaceList(result);
-}
-
-void Compilator::nand(ASTNode* root)
-{
-	auto children = root->getChildrenNodes(); // vector
-
-	bool firstIsNand;
-	bool secondIsNand;
-
-	// first argument
-	if (isTypeList(children[0]->getFunction().getType()))
-	{
-		firstIsNand = children[0]->getFunction().getList().nand();
-	}else {
-		if (children[0]->getFunction().getList().size() == 0)
-			firstIsNand = false;
-	   else firstIsNand = children[0]->getFunction().getList().front() != 0;
-	}
-
-	// second argument
-	if (isTypeList(children[1]->getFunction().getType())) 
-	{
-		secondIsNand = children[1]->getFunction().getList().nand();
-	}else {
-		if (children[1]->getFunction().getList().size() == 0)
-			secondIsNand = false;
-       else secondIsNand = children[1]->getFunction().getList().front() != 0;
-	}
-
-	bool result = firstIsNand || secondIsNand;
 	root->getFunction().replaceList(result);
 }
 

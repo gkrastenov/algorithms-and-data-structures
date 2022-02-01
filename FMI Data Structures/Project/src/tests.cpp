@@ -343,7 +343,7 @@ TEST_CASE("Run built-in function")
 
 		std::stringstream myNand3("nand(5, 5)");
 		compilator.compileCode(myNand3);
-		REQUIRE(compilator.output() == isTrue);
+		REQUIRE(compilator.output() == isFalse);
 
 		std::stringstream myNand4("nand(5, 0)");
 		compilator.compileCode(myNand4);
@@ -351,11 +351,11 @@ TEST_CASE("Run built-in function")
 
 		std::stringstream myNand5("nand(0, 0)");
 		compilator.compileCode(myNand5);
-		REQUIRE(compilator.output() == isFalse);
+		REQUIRE(compilator.output() == isTrue);
 
 		std::stringstream myNand6("nand([], [])");
 		compilator.compileCode(myNand6);
-		REQUIRE(compilator.output() == isFalse);
+		REQUIRE(compilator.output() == isTrue);
 
 		std::stringstream myNand7("nand([1], [])");
 		compilator.compileCode(myNand7);
@@ -363,11 +363,11 @@ TEST_CASE("Run built-in function")
 
 		std::stringstream myNand8("nand([1 2], [3])");
 		compilator.compileCode(myNand8);
-		REQUIRE(compilator.output() == isTrue);
+		REQUIRE(compilator.output() == isFalse);
 
 		std::stringstream myNand9("nand(5, [5 3 2])");
 		compilator.compileCode(myNand9);
-		REQUIRE(compilator.output() == isTrue);
+		REQUIRE(compilator.output() == isFalse);
 
 		REQUIRE(compilator.getContainerSize() == 0);
 	}
